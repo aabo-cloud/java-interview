@@ -4,7 +4,7 @@
 
 ### Java 面向对象
 
-**Java 语言三大特性？**
+#### Java 语言三大特性？
 
 封装、继承和多态
 
@@ -14,7 +14,7 @@
 
 多态我的理解是不同的类对同一个行为具有多个不同表现形式。在 Java 中有两种形式可以实现多态：继承 (多个子类对同一方法的重写) 和接口 (多个类实现接口并覆盖接口中同一方法)。
 
-**重载与重写的区别？**
+#### 重载与重写的区别？
 
 重载发生在同一个类中，具有相同方法名，但是有不同的参数或者参数个数或者不同的参数顺序的方法。比如构造方法。
 
@@ -29,7 +29,7 @@
 | 访问修饰符 | 可修改   | 访问修饰符范围大于等于父类。父类被 private/final/static 修饰不能重写 |
 | 发生阶段   | 编译期   | 运行期                                                       |
 
-**接口和抽象类有什么共同点和区别？**
+#### 接口和抽象类有什么共同点和区别？
 
 **共同点** ：
 
@@ -43,7 +43,7 @@
 - 一个类只能继承一个类，但是可以实现多个接口。
 - 接口中的成员变量只能是 `public static final` 类型的，不能被修改且必须有初始值，而抽象类的成员变量默认 `default`，可在子类中被重新定义，也可被重新赋值。
 
-**引用拷贝、浅拷贝和深拷贝?**
+#### 引用拷贝、浅拷贝和深拷贝?
 
 引用拷贝：两个不同的引用指向同一个对象。
 
@@ -51,7 +51,7 @@
 
 深拷贝：深拷贝会完全复制整个对象，包括这个对象所包含的内部对象。
 
-**内部类?**
+#### 内部类?
 
 内部类有四种，分别是 `静态内部类` 、`局部内部类` 、`匿名内部` 和 `成员内部类`。
 
@@ -63,7 +63,7 @@
 
 匿名内部类：是指使用继承一个父类或者实现一个接口这两种方式直接定义并使用的类，匿名内部类没有class关键字，直接使用 `new` 生成一个对象
 
-**final 关键字?**
+#### final 关键字?
 
 `final` 关键字可以修饰类、方法和属性。
 
@@ -86,7 +86,7 @@
 | `double`  | 64   | 8    | 0d      | 4.9E-324 ~ 1.7976931348623157E308          |
 | `boolean` | 1    |      | false   | true、false                                |
 
-**基本类型和包装类型的区别？**
+#### 基本类型和包装类型的区别？
 
 - 包装类型不赋值就是 `null` ，而基本类型有默认值且不是 `null`。
 
@@ -98,7 +98,7 @@
 
   包装类占用的内存大小 = 对象头 (header) 大小 + 基本数据类型的大小。对于基本类型 `int` 只占用 4 个字节。但是包装类型 `Integer` 还需要加上对象头 header 所占用的 12 字节。
 
-**包装类的缓存机制？**
+#### 包装类的缓存机制？
 
 Java 基本数据类型的包装类型的大部分都用到了缓存机制来提升性能。
 
@@ -114,13 +114,13 @@ Integer num2 = Integer.valueOf(123);	// 发生了装箱
 Integer num3 = new Integer(123);
 ```
 
-**`==` 与 `equals` 的区别？**
+#### `==` 与 `equals` 的区别？
 
 `==` ：基本数据类型比较的是值是否相等，引用数据类型判断的是两个对象的地址是否相等
 
 `equals` ：如果类中没有重写 `equals()` 方法，等价于使用 `==` 来比较两个对象；如果重写了 `equals()` 方法，则使用重写的方法来判断两个对象是否相等。
 
-**hashCode() 的作用？**
+#### hashCode() 的作用？
 
 获取对象在哈希表中的索引位置。
 
@@ -128,7 +128,7 @@ Integer num3 = new Integer(123);
 
 其实，`hashCode()` 和 `equals()` 都是用于比较两个对象是否相等。
 
-**为什么两个对象有相同的 `hashCode` 值，它们也不一定是相等的？**
+#### 为什么两个对象有相同的 `hashCode` 值，它们也不一定是相等的？
 
 因为多个不同的对象通过哈希算法可能计算出相同的 hashCode 值，这时候就还需要 equals() 方法来判断两个对象是否相同。
 
@@ -138,7 +138,7 @@ Integer num3 = new Integer(123);
 
 所以重写 `equals()` 时必须重写 `hashCode()` 方法.。
 
-**String、StringBuffer、StringBuilder 的区别？**
+#### String、StringBuffer、StringBuilder 的区别？
 
 `String` 类型中使用 `final` 关键字来修饰字符数组，所以 `String` 对象是不可修改的。
 
@@ -155,7 +155,7 @@ Integer num3 = new Integer(123);
 2. 单线程操作字符串缓冲区下操作大量数据: 适用 `StringBuilder`
 3. 多线程操作字符串缓冲区下操作大量数据: 适用 `StringBuffer`
 
-**字符串拼接用“+” 还是 StringBuilder ？**
+#### 字符串拼接用 "+" 还是 StringBuilder ？
 
 Java 语言本身并不支持运算符重载，“+”和“+=”是专门为 String 类重载过的运算符，也是 Java 中仅有的两个重载过的运算符。
 
@@ -165,7 +165,7 @@ Java 语言本身并不支持运算符重载，“+”和“+=”是专门为 St
 
 建议直接使用 `StringBuilder` 进行拼接。
 
-**字符串常量池的作用？**
+#### 字符串常量池的作用？
 
 `JVM` 为了提升性能和减少内存消耗针对字符串 (String 类) 专门开辟的一块区域，主要目的是为了避免字符串的重复创建。
 
@@ -178,23 +178,62 @@ String bb = "ab";
 System.out.println(aa == bb);// true
 ```
 
- **String s1 = new String("abc"); 这句话创建了几个字符串对象？**
+####  String s1 = new String("abc"); 这句话创建了几个字符串对象？
 
 // TODO
 
 
 
-**intern 方法有什么作用?**
+#### intern 方法有什么作用?
 
 // TODO
 
 
 
-**String 类型的变量和常量做“+”运算时发生了什么？**
+#### String 类型的变量和常量做“+”运算时发生了什么？
 
 // TODO
 
 
 
+### Java 异常
+
+`Java` 中的异常分为 `Error` 和 `Exception`
+
+![Inkedtypes-of-exceptions-in-java](Java 基础.assets/Inkedtypes-of-exceptions-in-java.jpg)
+
+#### Exception 和 Error 有什么区别？
+
+- **`Exception`**：程序可以处理的异常，可以通过 `catch` 捕获或 `Throws` 抛出。`Exception` 分为 `Checked Exception` (受检查异常，必须处理) 和 `Unchecked Exception` (不受检查异常，可以不处理) 两种。
+
+  - 代码在编译过程中，如果受检查异常没有被 `catch` 或者 `throws` 关键字处理的话，无法通过编译。除了 `RuntimeException` 及其子类以外，其他的 `Exception` 类及其子类都属于受检查异常 。
+
+    > 常见的受检查异常：IO 相关的异常、`ClassNotFoundException` 、`SQLException`...。
+
+  - 代码在编译过程中 ，即使不处理不受检查异常也可以正常通过编译。`RuntimeException` 及其子类都属于非受检查异常。
+
+    > 常见的非受检查异常：`NullPointerException`、`ArrayIndexOutOfBoundsException`、`ClassCastException`...
+
+- **`Error`** ：`Error` 属于程序无法处理的错误。例如虚拟机运行错误 (`Virtual MachineError`)、虚拟机内存溢出错误 (`OutOfMemoryError`)、栈溢出错误 (`StackOverFlowError`) 等 。这些异常发生时，Java 虚拟机一般会终止线程。
+
+#### try-catch-finally 如何使用？
+
+- `try` 块： 用于捕获异常。其后可接零个或多个 `catch` 块，如果没有 `catch` 块，必须跟一个 `finally` 块。
+- `catch` 块： 用于处理 `try` 捕获到的异常。
+- `finally` 块：无论是否捕获或处理异常，`finally` 块里的语句都会被执行。当在 `try` 块或 `catch` 块中遇到 `return` 语句时，`finally` 语句块将在方法返回之前被执行。
+
+> **注意：不要在 finally 语句块中使用 return。** 当 `try`  `catch` 语句和 `finally` 语句中都有 `return` 语句时， `try` `catch` 语句块中的 `return` 语句会被忽略。这是因为 `try` 语句中的 `return` 返回值会先被暂存在一个本地变量中，当执行到 `finally` 语句中的 `return` 之后，这个本地变量的值就变为了 `finally` 语句中的 `return` 返回值。
+
+#### finally 中的代码一定会执行吗？
+
+不一定。
+
+`finally` 执行之前虚拟机被终止运行、程序所在的线程死亡，`finally` 中的代码就不会被执行。
 
 
+
+### 泛型
+
+#### 什么是 Java 泛型 (Generics) ？有什么作用？
+
+使用泛型参数，可以增强代码的可读性以及稳定性。
