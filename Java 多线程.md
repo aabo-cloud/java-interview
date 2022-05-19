@@ -31,6 +31,18 @@
 
 `Java` 线程在运行的生命周期中的指定时刻只可能处于下面 `6` 种不同状态的其中一个状态。
 
+- `New`：新创建的线程，尚未执行；
+
+- `Runnable`：运行中的线程，正在执行 `run()` 方法；
+
+- `Blocked`：运行中的线程，因为某些操作被阻塞而挂起；
+
+- `Waiting`：运行中的线程，因为某些操作在等待中；`wait()` 方法等待
+
+- `Timed Waiting`：运行中的线程，因为执行 `sleep()` 方法正在计时等待；
+
+- `Terminated`：线程已终止，因为 `run()` 方法执行完毕。
+
 ![Java 线程的状态 ](Java 多线程.assets/Java线程的状态.png)
 
 线程的状态随着代码的执行在不同状态之间切换。
@@ -77,12 +89,121 @@
 
 // TODO 银行家算法，应该写在操作系统里
 
-### `sleep()` 方法和 `wait()` 方法区别和共同点？
+### `Java` 线程实现方式？
 
-- 两者最主要的区别在于：**`sleep()` 方法没有释放锁，而 `wait()` 方法释放了锁** 。
-- 两者都可以暂停线程的执行。
-- `wait()` 通常被用于线程间交互/通信，`sleep() `通常被用于暂停执行。
+继承 `Thread` 类、实现 `Runnable` 接口、实现 `Callable` 接口、创建线程池。
+
+### 线程终止的原因？
+
+- 线程正常终止：`run()` 方法执行到 `return` 语句返回；
+- 线程意外终止：`run()` 方法因为未捕获的异常导致线程终止；
+- 对某个线程的 `Thread` 实例调用 `stop()` 方法强制终止，会造成线程不安全；
+- 当线程未处于阻塞状态，调用 `interrupted()` 方法来终止线程；`t.join()` 等待 t 线程执行结束后再继续运行
+
+### 线程唤醒方式？
+
+* 另一个线程调用这个对象的 `notify()` 方法且刚好被唤醒的是本线程。
+* 另一个线程调用这个对象的 `notifyAll()` 方法。
+* 过了 `wait(long timeout)` 规定的超时时间，如果传入 `0` 就是永久等待。
+
+### 守护线程 `Daemon Thread` ？
+
+在调用 `start()` 方法前，调用 `setDaemon(true)` 把该线程标记为守护线程；守护线程是指为其他线程服务的线程。在 `JVM` 中，所有非守护线程都执行完毕后，无论有没有守护线程，虚拟机都会自动退出。
+
+### `sleep()` 方法和 `wait()` 方法区别？
+
+区别：
+
+* `sleep` 方法属于 `Thread` 类，`wait` 方法属于 `Object` 类
+
+- `sleep()` 方法没有释放锁，而 `wait()` 方法释放了锁 。
 - `wait()` 方法被调用后，线程不会自动苏醒，需要别的线程调用同一个对象上的 `notify() `或者 `notifyAll()` 方法。`sleep() `方法执行完成后，线程会自动苏醒。或者可以使用 `wait(long timeout)` 超时后线程会自动苏醒。
+
+### 为什么 `wait()` 方法在 `Object` 类中？
+
+释放锁资源实际是通知对象内置的 `monitor` 对象进行释放，而只有所有对象都有内置的 `monitor` 对象才能实现对任何对象的锁资源进行操作。又因为所有类都继承自 `Object`，所以 `wait()` 就成了 `Object` 类的方法。
+
+### 为什么调用 `start()` 方法时会执行 `run()` 方法，为什么不能直接调用 `run()` 方法？
+
+线程调用 `start()`方法，会启动该线程并使线程进入就绪状态，当分配到时间片后就可以开始运行了。`start()` 会执行线程的相应准备工作，然后自动执行 `run()` 方法的内容，这是真正的多线程工作。 
+
+但是，直接执行 `run()` 方法，会把 `run()` 方法当成一个 `main` 线程下的普通方法去执行，并不会新启动一个线程执行它，所以这并不是多线程工作。
+
+### 什么是线程同步？
+
+当多个线程同时运行时，线程的调度由操作系统决定。如果多个线程同时读写共享变量，就会出现数据不一致的问题。可以使用 `synchronized` 给**对象**进行加锁来实现线程同步。用 `synchronized` 修饰方法可以把整个方法变为同步代码块， `synchronized` 方法加锁对象是 `this`。
+
+### `synchronized` 关键字？
+
+`synchronized` 关键字解决的是多个线程之间访问资源的同步性，该关键字可以保证被它修饰的方法或者代码块在任意时刻只能有一个线程执行。
+
+#### `synchronized` 关键字的使用？
+
+1. 修饰实例方法：作用于当前**对象实例**加锁，进入同步代码前要获得当前**对象实例**的锁。
+
+2. 修饰静态方法：给当前**类**加锁，会作用于类的所有**对象实例** ，进入同步代码前要获得当前**类**的锁。
+
+   > 如果线程 `A` 调用**实例对象**的非静态 `synchronized` 方法，而线程 `B` 需要调用这个实例对象所属**类**的静态 `synchronized` 方法，不会产生互斥，因为访问静态 `synchronized` 方法占用的锁是当前**类**的锁，而访问非静态 `synchronized` 方法占用的锁是当前**实例对象**锁。
+
+3. 修饰代码块：可以指定加锁对象，对给定对象/类加锁。
+
+   > `synchronized(this|object)` 表示进入同步代码块前要获得**给定对象的锁**。`synchronized(类.class)` 表示进入同步代码块前要获得**当前类的锁**。
+
+#### 双重检验锁方式实现单例模式？
+
+```java
+public class Singleton {
+
+    private volatile static Singleton uniqueInstance;
+
+    private Singleton() {
+    }
+
+    public static Singleton getUniqueInstance() {
+       // 先判断对象是否已经实例过，没有实例化过才进入加锁代码
+        if (uniqueInstance == null) {
+            // Singleton 类加锁
+            synchronized (Singleton.class) {
+                if (uniqueInstance == null) {
+                    uniqueInstance = new Singleton();
+                }
+            }
+        }
+        return uniqueInstance;
+    }
+    
+}
+```
+
+需要注意 `uniqueInstance` 应该采用 `volatile` 关键字修饰。
+
+因为 `uniqueInstance = new Singleton();` 这段代码其实是分为三步执行：
+
+1. 为 `uniqueInstance` 分配内存空间。
+2. 初始化 `uniqueInstance`。
+3. 将 `uniqueInstance` 指向分配的内存地址。
+
+但是由于 `JVM` 具有指令重排的特性，执行顺序有可能改变。
+
+指令重排在单线程环境下不会出现问题，但是在多线程环境下会导致一个线程获得还没有初始化的实例。
+
+> 例如，线程 `T1` 执行了 1 和 3，此时 `T2` 调用 `getUniqueInstance()` 后发现 `uniqueInstance` 不为空，因此返回 `uniqueInstance`，但此时 `uniqueInstance` 还未被初始化。
+
+使用 `volatile` 可以禁止 `JVM` 的指令重排，保证在多线程环境下也能正常运行。
+
+#### 构造方法可以使用 `synchronized` 关键字修饰么？
+
+构造方法不能使用 synchronized 关键字修饰。构造方法本身就属于线程安全的。
+
+#### `synchronized` 关键字的底层原理？
+
+##### `synchronized` 修饰代码块的情况：
+
+
+
+
+
+
 
 
 
