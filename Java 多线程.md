@@ -199,11 +199,23 @@ public class Singleton {
 
 ##### `synchronized` 修饰代码块的情况：
 
+查看编译后生成的 `.class` 文件查看字节码信息。
+
+其中可以看出：`synchronized` 同步语句块的实现使用的是 `monitorenter` 和 `monitorexit` 指令，其中 `monitorenter` 指令指向同步代码块的开始位置，`monitorexit` 指令则指明同步代码块的结束位置。
+
+当执行 `monitorenter` 指令时，线程试图获取对象的锁，如果锁的计数器为 `0` 则表示锁可以被获取，获取后将锁计数器加 `1`。获取锁其实就是获取对象中 **对象监视器 `monitor`** 的持有权。
+
+拥有对象锁的线程执行 `monitorexit` 指令来释放锁。将锁计数器设为 `0`，表明锁被释放，其他线程可以尝试获取锁。如果获取对象锁失败，那当前线程就要阻塞等待，直到锁被别的线程释放为止。
+
+##### `synchronized` 修饰方法的的情况：
+
+`synchronized` 修饰的方法在字节码中有一个 `ACC_SYNCHRONIZED` 标识，该标识指明了该方法是一个同步方法。`JVM` 通过 `ACC_SYNCHRONIZED` 访问标志来辨别一个方法是否声明为同步方法，从而执行相应的同步调用。**本质也是对对象监视器 `monitor` 的获取。**
+
+如果是实例方法，`JVM` 会尝试获取**实例对象**的锁。如果是静态方法，`JVM` 会尝试获取当前**类**的锁。
+
+// TODO 对象监视器 `monitor`
 
 
 
-
-
-
-
+#### `synchronized` 和 `ReentrantLock` 的区别？
 
