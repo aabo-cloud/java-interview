@@ -223,7 +223,7 @@ public class Singleton {
 
 **可重入锁** 指的是自己可以再次获取自己的内部锁。比如一个线程获得了某个对象的锁，此时这个对象锁还没有释放，当其再次想要获取这个对象的锁的时候还是可以获取的，如果是不可重入锁的话，就会造成死锁。同一个线程每次获取锁，锁的计数器都自增 `1`，所以要等到锁的计数器下降为 `0` 时才能释放锁。
 
-`synchronized` 依赖于 `JVM` 而 `ReentrantLock` 依赖于 `API`，是 `Lock` 接口下的一个实现类。
+`synchronized` 依赖于 `JVM` 而 `ReentrantLock` 依赖于 `API` (`AQS` 实现)，是 `Lock` 接口下的一个实现类。
 
 `ReentrantLock` 等待可中断。
 
@@ -260,13 +260,17 @@ public class Singleton {
 
 1. `ThreadLocal `是 `Java` 中所提供的线程本地存储机制，可以将数据存在某个线程内部，该线程可以在任意时刻、任意方法中获取缓存的数据。
 
-2. `ThreadLocal` 底层是通过 `ThreadLocalmap` 来实现的，每个 `Thread` 对象 (注意不是 `ThreadLocal` 对象) 中都存在一个 `ThreadLocalMap`，`Map` 的 `key` 为 `ThreadLocal` 对象，`Map` 的 `value` 为需要缓存的值。
+2. `ThreadLocal` 底层是通过 `ThreadLocalmap` 来实现的，每个 `Thread` 对象 (注意不是 `ThreadLocal` 对象) 中都存在一个 `ThreadLocalMap`，`Map` 的 `key` 为 `ThreadLocal` 对象的弱引用，`Map` 的 `value` 为需要缓存的值。
 
 #### `ThreadLocal` 内存泄露问题？
 
 `ThreadLocalMap` 中使用的 `key` 为 `ThreadLocal` 的弱引用，而 `value` 是强引用。所以，如果 `ThreadLocal` 没有被外部强引用的情况下，在垃圾回收的时候，`key` 会被清理掉，而 `value` 不会被清理掉。这样一来，`ThreadLocalMap` 中就会出现 `key` 为 `null` 的 `Entry`。
 
 如果不做任何措施，`value` 永远无法被 `GC` 回收，这个时候就可能会产生内存泄露。`ThreadLocalMap` 实现中已经考虑了这种情况，在调用 `set()`、`get()`、`remove()` 方法的时候，会清理掉 `key` 为 `null` 的记录。所以使用完 `ThreadLocal`方法后最好手动调用`remove()`方法。
+
+// TODO ThreadLocal more specific 
+
+
 
 ### 线程池？
 
@@ -280,7 +284,7 @@ public class Singleton {
 
 #### 如何创建线程池？
 
-可以通过 `Executor` 框架的工具类 `Executors` 来创建三种线程池：
+可以通过 `Executor` 框架的工具类 `Executors` 来创建四种线程池：
 
 - **`FixedThreadPool`**：固定线程数量的线程池。当有一个新的任务提交时，线程池中若有空闲线程，则立即执行。若没有，则新的任务会被暂存在一个任务队列中，等有线程空闲时，再处理在队列中的任务。
 
@@ -291,6 +295,8 @@ public class Singleton {
 - **`CachedThreadPool`：**可根据实际情况调整线程数量的线程池。线程池的线程数量不确定，但若有空闲线程可以复用，则会优先使用可复用的线程。若所有线程均在工作，又有新的任务提交，则会创建新的线程处理任务。所有线程在当前任务执行完毕后，将返回线程池进行复用。
 
   > `CachedThreadPool` 允许创建的最大线程数量为 `Integer.MAX_VALUE`，可能会创建大量线程，从而导致 `OOM`。
+
+- **`ScheduledThreadPoolExecutor`：**主要用来在给定的延迟后运行任务，或者定期执行任务。 
 
 这些线程池都有缺点，所以一般不用 `Executors` 去创建。而是通过 `ThreadPoolExecutor` 的构造函数去创建线程池。
 
@@ -320,7 +326,48 @@ public class Singleton {
 
 ### `AQS` (`AbstractQueuedSynchronizer`) ？
 
-// TODO
+`AQS` 是一个用来构建锁和同步器的框架，使用 `AQS` 能构造出各种应用广泛的同步器，比如 `ReentrantLock`、`Semaphore` 、`CountDownLatch`。
+
+`AQS` 核心思想：
+
+如果被请求的共享资源空闲，则将当前请求资源的线程设置为有效的工作线程，并且将共享资源设置为锁定状态。
+
+如果被请求的共享资源被占用，那么就需要一套线程阻塞等待以及被唤醒时锁分配的机制，这个机制 `AQS` 是用 `CLH` 队列锁实现的，即将暂时获取不到锁的线程加入到队列中。`AQS` 是将每条请求共享资源的线程封装成一个 `CLH` 锁队列的一个结点 (Node) 来实现锁的分配。
+
+![AQS原理图](Java 多线程.assets/AQS原理图.png)
+
+---
+
+`AQS` 使用一个`volatile` 修饰的 `int` 成员变量 `state` 来表示同步状态，通过内置的 `FIFO` 队列 `CLH` 来完成获取资源线程的排队工作。`AQS` 使用 `CAS` 对该同步状态进行原子操作实现对其值的修改。
+
+#### `CAS(Compare and Swap)` ？
+
+`CAS` 指 `Compare and swap` 比较和替换是设计并发算法时用到的一种技术。`CAS` 操作是乐观锁，每次不加锁而是假设没有冲突而去完成某项操作，如果因为冲突失败就重试，直到成功为止。
+
+`CAS` 指令有三个操作数，分别是内存位置 (在 `Java` 中可以简单的理解为变量的内存地址，用 `V` 表示)，旧的预期值 (用 `A` 表示) 和准备设置的新值 (用 `B` 表示)。`CAS` 指令在执行的时候，当且仅当 `V` 符合 `A` 时，才会用 `B` 更新`V` 的值，否则不会执行更新。
+
+##### `CAS` 带来的问题？
+
+`ABA` 问题。一般加版本号进行解决。
+
+具体操作：乐观锁每次在执行数据的修改操作时都会带上一个版本号，在预期的版本号和数据的版本号一致时就可以执行修改操作，并对版本号执行加 `1` 操作，否则执行失败。
+
+#### `AQS` 构造的 `ReentrantLock`？
+
+`ReentrantLock` 一次只允许一个线程访问某个资源。`state` 初始化为 `0`，表示未锁定状态。`A` 线程 `lock()` 时，会调用 `tryAcquire()` 独占该锁并将 `state+1` 。此后，其他线程再 `tryAcquire()` 时就会失败，直到 `A` 线程 `unlock()` 到 `state=`0 (即释放锁) 为止，其它线程才有机会获取该锁。释放锁之前，`A` 线程自己是可以重复获取此锁的 (`state` 会累加)，这就是可重入的概念。但要注意，获取多少次就要释放多少次，这样才能保证 `state` 能回零即释放锁。
+
+#### `AQS` 构造的 `CountDownLatch`？
+
+`CountDownLatch` 允许 `N` 个线程阻塞在一个地方，直至所有线程的任务都执行完毕。例如多线程读取多个文件最后处理的场景 。任务分为 `N` 个子线程去执行，`state` 也初始化为 `N`。这 `N` 个子线程是并行执行的，每个子线程执行完后 ` countDown()` 一次，`state` 会 `CAS(Compare and Swap)` 减 `1`。等到所有子线程都执行完后(即 `state=0` )，会 `unpark()` 主调用线程，然后主调用线程就会继续后续动作。
+
+#### 使用 `AQS` 自定义构造器？
+
+同步器的设计是基于模板方法模式的，如果需要自定义同步器一般的方式是这样：
+
+1. 自定义同步器继承 `AbstractQueuedSynchronizer` 并重写指定的方法。重写方法的功能是对共享资源 `state` 的获取和释放方式。
+2. 调用其模板方法，而这些模板方法会调用自定义同步器重写的方法。
+
+// TODO AQS 更详细
 
 
 
