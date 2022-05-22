@@ -294,9 +294,54 @@ public Student getStudent(
 
 #### 什么是 `SpringBoot` 自动装配？
 
+通过注解或者一些简单的配置就能在 `Spring Boot` 的帮助下实现某块功能。
 
+首先从 `@EnableAutoConfiguration` 开始。
 
+该注解中有一个 `@Import({AutoConfigurationImportSelector.class})` 注解，会向 `IOC` 容器中导入 `AutoConfigurationImportSelector` 这个选择器组件，其中实现了 `selectImports` 方法，这个方法主要用于**获取所有符合条件的类的全限定类名，把他们加载到 `IoC` 容器中**。
 
+该方法中调用了 `getAutoConfigurationEntry()`。该方法主要是获取需要加载的所有全类名。
+
+```java
+private static final AutoConfigurationEntry EMPTY_ENTRY = new AutoConfigurationEntry();
+
+AutoConfigurationEntry getAutoConfigurationEntry(AutoConfigurationMetadata autoConfigurationMetadata, AnnotationMetadata annotationMetadata) {
+    // <1>.
+    if (!this.isEnabled(annotationMetadata)) {
+        return EMPTY_ENTRY;
+    } else {
+        // <2>.
+        AnnotationAttributes attributes = this.getAttributes(annotationMetadata);
+        // <3>.
+        List<String> configurations = this.getCandidateConfigurations(annotationMetadata, attributes);
+        // <4>.
+        configurations = this.removeDuplicates(configurations);
+        Set<String> exclusions = this.getExclusions(annotationMetadata, attributes);
+        this.checkExcludedClasses(configurations, exclusions);
+        configurations.removeAll(exclusions);
+        configurations = this.filter(configurations, autoConfigurationMetadata);
+        this.fireAutoConfigurationImportEvents(configurations, exclusions);
+        // <5>
+        return new AutoConfigurationImportSelector.AutoConfigurationEntry(configurations, exclusions);
+    }
+}
+```
+
+该方法的执行步骤：
+
+1. `isEnabled()` 方法，判断自动装配开关是否打开。默认是打开的，可以在配置文件中设置。
+
+2. `getAttributes()` 方法，获取 `EnableAutoConfiguration` 注解中的 `exclude` 和 `excludeName`。
+
+3. `getCandidateConfigurations()` 方法，读取 `autoconfiguration` `jar` 包下的 `META-INF/spring.factories` 文件，获取需要自动装配的所有配置类的全类名。
+
+4. `fireAutoConfigurationImportEvents()` 方法，将不需要加载的类去除。
+
+   `@ConditionalOnClass` 中的所有条件都满足，该类才会生效。
+
+5. 最后返回一个存放着需要加载的类的 `Selector`。
+
+所以 `@import` 方法使用这个 `Selector` 可以正确的将 `Spring Boot` 所需要的类加载到 `IOC` 容器中。
 
 
 
