@@ -1,3 +1,5 @@
+[TOC]
+
 ## Spring & Spring Boot
 
 ### 什么是框架？
@@ -249,13 +251,19 @@ public Student getStudent(
 
 4. 串行化 `SERIALIZABLE`：最高的事务隔离级别，在该级别下，事务串行化顺序执行，可以避免脏读、不可重复读与幻读。但是这种事务隔离级别效率低下，比较耗数据库性能，一般不使用。
 
----
+#### 并发事务带来的问题？
 
-脏读：一个事务得到了另一个事务尚未提交的数据。
+**脏读：**一个事务得到了另一个事务尚未提交的数据。
 
-不可重复读：一个事务范围内两个相同的查询返回了不同的数据 (中途其他事务改变了数据)。
+**不可重复读：**一个事务范围内两个相同的查询返回了不同的数据 (中途其他事务改变了数据)。
 
-幻读：事务 `A` 在执行 `DML` 语句时，事务 `B` 也在执行 `DML` 语句 , 当 `B` 修改了 `A` 修改过的数据，就会导致 `A` 在查询时产生幻觉。
+**幻读：**幻读与不可重复读类似。当事务 `A` 读取了几行数据，接着事务 `B` 插入了一些数据。随后事务 `A` 再次查询数据，就会发现多了一些原本不存在的记录，像发生了幻觉一样，所以称为幻读。
+
+**不可重复读和幻读区别：**
+
+不可重复读的重点是修改。比如多次读取一条记录发现其中某些列的值被修改。
+
+幻读的重点在于新增或者删除。比如多次执行同一条查询语句时，发现记录增多或减少了。
 
 #### 事务只读属性？
 
@@ -333,7 +341,7 @@ AutoConfigurationEntry getAutoConfigurationEntry(AutoConfigurationMetadata autoC
 
 2. `getAttributes()` 方法，获取 `EnableAutoConfiguration` 注解中的 `exclude` 和 `excludeName`。
 
-3. `getCandidateConfigurations()` 方法，读取 `autoconfiguration` `jar` 包下的 `META-INF/spring.factories` 文件，获取需要自动装配的所有配置类的全类名。
+3. `getCandidateConfigurations()` 方法，通过 `SpringFactoriesLoader` 读取 `autoconfiguration` `jar` 包下的 `META-INF/spring.factories` 文件，获取需要自动装配的所有配置类的全类名。
 
 4. `fireAutoConfigurationImportEvents()` 方法，将不需要加载的类去除。
 
@@ -342,6 +350,10 @@ AutoConfigurationEntry getAutoConfigurationEntry(AutoConfigurationMetadata autoC
 5. 最后返回一个存放着需要加载的类的 `Selector`。
 
 所以 `@import` 方法使用这个 `Selector` 可以正确的将 `Spring Boot` 所需要的类加载到 `IOC` 容器中。
+
+// TODO more specific
+
+
 
 
 
