@@ -7,7 +7,7 @@ Java 集合， 也叫作容器，主要是由两大接口派生而来：
 * `Collection` 接口，主要用于存放单一元素；其中有三个主要的子接口：`List`、`Set` 和 `Queue`。
 * `Map` 接口，主要用于存放键值对。
 
-![img](Java 集合.assets/java-collection-hierarchy.1727461b.png)
+![img](Java集合.assets/java-collection-hierarchy.1727461b.png)
 
 ---
 
@@ -103,7 +103,7 @@ List 中存放的是基本数据类型的包装类和 String 类型时，可以�
 
 `JDK8` 之后，当链表长度大于阈值 (默认为 `8`) 时，将链表转化为红黑树，以减少搜索时间。
 
-![jdk1.8之后的内部结构-HashMap](Java 集合.assets/jdk1.8之后的内部结构-HashMap.ae1eae18.png)
+![jdk1.8之后的内部结构-HashMap](Java集合.assets/jdk1.8之后的内部结构-HashMap.ae1eae18.png)
 
 // TODO 红黑树原理
 
@@ -178,7 +178,7 @@ index = h & (table.length -1)
 
 `TreeMap` 和`HashMap` 都继承自`AbstractMap` ，但是 `TreeMap` 还实现了 `NavigableMap` 接口和 `SortedMap`  接口。
 
-![img](Java 集合.assets/TreeMap继承结构.d3d526de.png)
+![img](Java集合.assets/TreeMap继承结构.d3d526de.png)
 
 实现 `NavigableMap` 接口让 `TreeMap`  可以对集合内元素进行搜索。
 

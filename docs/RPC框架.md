@@ -24,7 +24,7 @@ RPC 由这几部分组成
 
 
 
-![RPC执行流程](Rpc 框架.assets/1594701419183-13976b20-36c8-44fa-a797-5f16ce27c495.jpg)
+![RPC执行流程](RPC框架.assets/1594701419183-13976b20-36c8-44fa-a797-5f16ce27c495.jpg)
 
 
 
@@ -42,7 +42,7 @@ RPC 由这几部分组成
 
 #### 如何设计一个 RPC 框架？
 
-![dubbo-structure](Rpc 框架.assets/dubbo-structure.png)
+![dubbo-structure](RPC框架.assets/dubbo-structure.png)
 
 ---
 
@@ -107,7 +107,7 @@ Socket 是 IP 与端口号的组合 (`IP` 地址`:`端口号)。
 
 #### `Socket` 通信过程？
 
-![socket-procedure](Rpc 框架.assets/socket-procedure.png)
+![socket-procedure](RPC框架.assets/socket-procedure.png)
 
 ---
 

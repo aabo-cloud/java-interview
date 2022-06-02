@@ -45,11 +45,11 @@
 
 - `Terminated`：线程已终止，因为 `run()` 方法执行完毕。
 
-![Java 线程的状态 ](Java 多线程.assets/Java线程的状态.png)
+![Java 线程的状态 ](Java多线程.assets/Java线程的状态.png)
 
 线程的状态随着代码的执行在不同状态之间切换。
 
-![InkedJava+线程状态变迁_LI](Java 多线程.assets/InkedJava+线程状态变迁_LI.jpg)
+![InkedJava+线程状态变迁_LI](Java多线程.assets/InkedJava+线程状态变迁_LI.jpg)
 
 ---
 
@@ -339,7 +339,7 @@ public class Singleton {
 
 如果被请求的共享资源被占用，那么就需要一套线程阻塞等待以及被唤醒时 锁分配的机制，这个机制 `AQS` 是用 `CLH` 队列锁实现的，即将暂时获取不到锁的线程加入到队列中。`AQS` 是将每条请求共享资源的线程封装成一个 `CLH` 锁队列的一个结点 (Node) 来实现锁的分配。
 
-![AQS原理图](Java 多线程.assets/AQS原理图.png)
+![AQS原理图](Java多线程.assets/AQS原理图.png)
 
 ---
 

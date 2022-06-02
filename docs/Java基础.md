@@ -251,7 +251,7 @@ Java 中将实参传递给方法的方式是 **值传递** ：
 
 `Java` 中的异常分为 `Error` 和 `Exception`
 
-![Inkedtypes-of-exceptions-in-java](Java 基础.assets/Inkedtypes-of-exceptions-in-java.jpg)
+![Inkedtypes-of-exceptions-in-java](Java基础.assets/Inkedtypes-of-exceptions-in-java.jpg)
 
 #### Exception 和 Error 有什么区别？
 
