@@ -130,39 +130,189 @@ Socket 是 IP 与端口号的组合 (`IP` 地址`:`端口号)。
 
 使用 `BIO` 的话，一个线程只能处理一个客户端请求。
 
-直接使用 `NIO` 比较麻烦，建议使用基于 `NIO` 的网络编程框架 `Netty`。
+直接使用 `NIO` 编码非常繁琐，建议使用基于 `NIO` 的网络编程框架 `Netty`。
 
 ### Netty 网络通信
 
-Netty 是一个基于 NIO 的 client-server 框架，可以简化网络应用程序的开发。
+`Netty` 是一个基于 `NIO` 的 `client-server` 框架，可以简化网络应用程序的开发。
 
 #### 用 Netty 可以做什么？
 
-1. 作为 RPC 框架的网络通信工具。
-2. 实现一个基本的 HTTP 服务器。
-3. 实现一个即使通讯系统。
+1. 作为 `RPC` 框架的网络通信工具。
+2. 用于实现基本的 `HTTP` 服务器。
+3. 用于实现即时通讯系统。
 
-Dubbo、RocketMQ、Elasticsearch 都用到了 Netty。
+`Dubbo`、`RocketMQ`、`Elasticsearch` 都用到了 `Netty`。
+
+#### Netty 的优点？
+
+**并发高：**
+
+`Netty` 是基于 `NIO (Nonblocking I/O)` 开发的同步非阻塞网络通信框架。
+
+如果使用 `BIO` 模型，在服务端和客户端建立连接后，等待客户端发送数据这个过程是阻塞的，一个线程只能处理一个请求。
+
+如果使用 `NIO` 模型，服务端会将请求交给 `Selector`，通过选择器监听多个 `Socket` 如果数据到达就返回数据处理再发送给客户端。这样就能让一个线程处理多个请求。
+
+**传输快：**
+
+`Netty` 传输快也是依赖了 `NIO` 的一个特性——*零拷贝*。
+
+一般数据如果需要通过 `IO` 读取到堆内存，中间需要经过 `Socket` 缓冲区，一个数据会被拷贝两次才能到达他的的终点，如果数据量大，会造成大量资源浪费。
+
+使用 NIO后，需要接收数据时，会在堆内存之外开辟一块内存，数据就直接通过 `IO` 读到了那块内存中，`Netty` 可以通过 `ByteBuf` 可以直接对这些数据进行操作，从而加快了传输速度。
+
+**封装好**
+
+
+
+#### Netty 核心组件？
+
+![da8402e1-7e6d-47cc-8dac-3d5c6a23b466](RPC框架.assets/da8402e1-7e6d-47cc-8dac-3d5c6a23b466.png)
+
+---
+
+##### Bytebuf (字节容器)
+
+网络通信最终都是通过字节流进行传输的。
+
+`ByteBuf` 就是 `Netty` 提供的一个字节容器，内部是一个字节数组。
+
+##### Bootstrap 和 ServerBootstrap (启动引导类)
+
+客户端启动引导类 `Bootstrap`
+
+```java
+// Bootstrap 只需要配置一个线程组发送请求
+EventLoopGroup group = new NioEventLoopGroup();
+try {
+    // 创建客户端启动引导类
+    Bootstrap b = new Bootstrap();
+    // 指定线程模型
+    b.group(group).(...);
+    // 使用 connect() 方法尝试连接到远程主机的端口号上作为 TCP 通信中的客户端
+    // 也可以使用 bind() 方法绑定一个本地端口，作为 UDP 通信中的一端
+    ChannelFuture f = b.connect(host, port).sync();
+    f.channel().closeFuture().sync();
+} finally {
+    // 关闭相关线程组资源
+    group.shutdownGracefully();
+}
+```
+
+服务端启动引导类 `ServerBootstrap`
+
+```java
+// ServerBootstrap 需要配置两个线程组
+// bossGroup 用于接收连接; workerGroup 用于具体的 IO 处理
+EventLoopGroup bossGroup = new NioEventLoopGroup(1);
+EventLoopGroup workerGroup = new NioEventLoopGroup();
+try {
+    // 2.创建服务端启动引导类
+    ServerBootstrap b = new ServerBootstrap();
+    // 3.给引导类配置两大线程组, 确定了线程模型
+    b.group(bossGroup, workerGroup).(...);
+    // 使用 bind() 方法绑定本地端口，等待客户端的连接
+    ChannelFuture f = b.bind(port).sync();
+    // 等待连接关闭
+    f.channel().closeFuture().sync();
+} finally {
+    // 7.关闭相关线程组资源
+    bossGroup.shutdownGracefully();
+    workerGroup.shutdownGracefully();
+}
+```
+
+##### Channel (网络操作抽象类)
+
+`Channel` 为 `Netty` 网络操作 (读写等操作) 的抽象类。通过 `Channel` 可以进行 `I/O` 操作。
+
+当客户端成功连接服务端，服务端就会新建一个 `Channel` 与该客户端绑定。
+
+比较常用的是 `NioServerSocketChannel` (服务端) 和 `NioSocketChannel` (客户端)。
+
+> 可以把 `Channel` 看做一个客户端和服务端之间的连接。
+
+```java
+// 通过 Bootstrap 的 connect 方法连接到服务端
+public Channel doConnect(InetSocketAddress inetSocketAddress) {
+    CompletableFuture<Channel> completableFuture = new CompletableFuture<>();
+    bootstrap.connect(inetSocketAddress).addListener((ChannelFutureListener) future -> {
+        if (future.isSuccess()) {
+            completableFuture.complete(future.channel());
+        } else {
+            throw new IllegalStateException();
+        }
+    });
+    return completableFuture.get();
+}
+```
+
+##### EventLoop (事件循环)
+
+负责监听注册到 `EventLoop` 上的 `Channel`，与 `Channel` 配合进行 `I/O` 操作。
+
+一般一个 `EventLoop` 关联一个线程，该线程处理注册在该 `EventLoop` 上的 `Channel` 的所有事件和任务。
+
+> 可以把一个 EventLoop 看做一个处理 I/O 操作的线程。
+
+##### EventLoopGroup (事件循环组)
+
+`EventLoopGroup` 包含多个 `EventLoop`，管理这些 `EventLoop` 的生命周期。
+
+> 可以把一个 EventLoopGroup 看做线程组。其中管理着多个线程。
+
+![6e1e15c1448cc2bf5d9c24446f3c515b](RPC框架.assets/6e1e15c1448cc2bf5d9c24446f3c515b.png)
+
+---
+
+##### ChannelHandler (消息处理器) 和 ChannelPipeline (消息流水线)
+
+`ChannelHandler` 是消息的具体处理器，负责处理客户端/服务端接收和发送数据。
+
+当 `Channel` 被创建时，会自动分配到一个专属的 `ChannelPipline`。
+
+一个 `ChannelPipline` 上可以有多个 `ChannelHandler`。当一个 `ChannelHandler` 处理完之后就会将数据交给下一个 `ChannelHandler`。
+
+![f26aef4e3d53f6a6cd46ab33e472dc06](RPC框架.assets/f26aef4e3d53f6a6cd46ab33e472dc06.png)
+
+
+
+##### ChannelFuture (操作执行结果)
+
+`Netty` 中的所有 `I/O` 操作都为异步的，不能立刻得到操作是否执行成功。
+
+可以通过 `ChannelFuture` 接口的 `addListener()` 方法注册一个 `ChannelFutureListener`，该监听器会自动返回结果。
+
+
+
+
+
+
 
 #### 如何使用 Netty 传输对象？
 
-##### 传输实体类
+##### 定义传输实体类
 
-1. 定义客户端与服务端进行交互的实体类。
+定义客户端与服务端进行交互的实体类。
 
-   客户端将 RpcRequest 类型的对象发送给服务端，服务端处理后，返回 RpcResponse 类型的对象给客户端。
+客户端将 `RpcRequest` 类型的对象发送给服务端，服务端处理后，返回 `RpcResponse` 类型的对象给客户端。
 
-##### 客户端
+##### 初始化客户端
 
-1. 初始化客户端，通过 sendMessage() 方法将 RpcRequest 对象发送给服务端。
+创建一个 client 类
 
-   sendMessage() 过程：
 
-   1. 首先初始化了一个 Bootstrap。
-   2. 通过 Bootstrap 对象连接服务端。
-   3. 通过 Channel 向服务端发送消息 RpcRequest。
-   4. 发送成功后，阻塞等待，知道 Channel 关闭。
-   5. 拿到服务端返回的结果 RpcResponse。
+
+通过 `sendMessage()` 方法将 `RpcRequest` 对象发送给服务端。
+
+`sendMessage()` 过程：
+
+1. 首先初始化了一个 Bootstrap。
+2. 通过 Bootstrap 对象连接服务端。
+3. 通过 Channel 向服务端发送消息 RpcRequest。
+4. 发送成功后，阻塞等待，知道 Channel 关闭。
+5. 拿到服务端返回的结果 RpcResponse。
 
 
 
