@@ -158,6 +158,8 @@ Socket 是 IP 与端口号的组合 (`IP` 地址`:`端口号)。
 
 `Netty` 传输快也是依赖了 `NIO` 的一个特性——*零拷贝*。
 
+// TODO
+
 一般数据如果需要通过 `IO` 读取到堆内存，中间需要经过 `Socket` 缓冲区，一个数据会被拷贝两次才能到达他的的终点，如果数据量大，会造成大量资源浪费。
 
 使用 NIO后，需要接收数据时，会在堆内存之外开辟一块内存，数据就直接通过 `IO` 读到了那块内存中，`Netty` 可以通过 `ByteBuf` 可以直接对这些数据进行操作，从而加快了传输速度。
@@ -276,8 +278,6 @@ public Channel doConnect(InetSocketAddress inetSocketAddress) {
 
 ![f26aef4e3d53f6a6cd46ab33e472dc06](RPC框架.assets/f26aef4e3d53f6a6cd46ab33e472dc06.png)
 
-
-
 ##### ChannelFuture (操作执行结果)
 
 `Netty` 中的所有 `I/O` 操作都为异步的，不能立刻得到操作是否执行成功。
@@ -285,6 +285,69 @@ public Channel doConnect(InetSocketAddress inetSocketAddress) {
 可以通过 `ChannelFuture` 接口的 `addListener()` 方法注册一个 `ChannelFutureListener`，该监听器会自动返回结果。
 
 
+
+#### Reactor 线程模型？
+
+经典的线程模型，基于事件驱动，采用多路复用将事件分发给相应的 Handler 处理，适合处理 I/O 较多的场景。
+
+分为单线程模型、多线程模型和主从多线程模型。
+
+##### 单线程 Reactor
+
+**连接请求** (OP_ACCEPT) 和**处理 I/O 操作** (OP_READ/OP_WRITE) 都由同一个 NIO 线程完成。
+
+系统资源消耗小，但无法支撑大量请求。
+
+![single-thread-reactor](RPC框架.assets/single-thread-reactor.png)
+
+##### 多线程 Reactor
+
+一个线程负责接收**连接请求**，一组 NIO 线程负责**处理 IO 操作**。
+
+因为只有一个线程处理连接，当并发连接数较多时，会存在性能问题。
+
+![multi-threads-reactor](RPC框架.assets/multi-threads-reactor.png)
+
+##### 主从多线程 Reactor
+
+一组 NIO 线程负责**连接请求**，一组 NIO 线程**处理 IO 操作**。
+
+![master-slave-multi-theads-reactor](RPC框架.assets/master-slave-multi-theads-reactor.png)
+
+#### Netty 线程模型？
+
+网络框架基本都是基于 Reactor 模式设计开发的。
+
+对应 Reactor 模式的三种线程模型。
+
+
+
+#### 什么是 TCP 沾包/拆包？怎么解决？
+
+基于 TCP 发送数据的时候，出现了多个字符串 “粘” 在一起或者一个字符串被 “拆” 开的问题。
+
+* 使用 Netty 自带的解码器。
+* 自定义序列化解码器。
+
+#### Netty 长连接/短连接？
+
+TCP 建立连接需要三次握手，释放连接需要四次挥手，这个过程比较消耗网络资源。
+
+* **长连接**
+
+  客户端和服务端建立连接后，连接不会主动关闭。如果客户端频繁请求资源，非常适合。
+
+* **短连接**
+
+  客户端和服务端建立连接后，完成一次请求就关闭连接，下一次请求需要重新连接。频繁建立/关闭连接比较浪费资源。
+
+#### Netty 心跳机制？
+
+在 TCP 保持长连接的过程中，可能会出现网络中断等网络异常。发生异常的时候，客户端和服务端之间如果没有交互的话，它们是无法发现对方已经掉线的。为了解决这个问题，需要引入**心跳机制**。
+
+客户端和服务端之间在一定时间内没有数据交互时，即处于空闲状态时，客户端或服务端就会发送一个特殊的数据包给对方，接收方收到这个数据包后，也会立即发送一个特殊的数据包来回应发送方。所以，当某一端收到新天消息后，就知道了对方仍然在线，确保了 TCP 连接的有效性。
+
+TCP 自带有长连接选项 (`SO_KEEPALIVE`)，但是 TCP 层面的长连接灵活性不够，一般会在应用层协议上实现自定义心跳机制。即在 Netty 中通过编码实现，核心类是 `IdleStateHandler`。
 
 
 
