@@ -11,7 +11,8 @@
   * [JVM](./docs/JVM.md)
 
 * 数据库
-  * [数据库](./docs/数据库.md)
+  * [MySQL](./docs/MySQL.md)
+  * [Redis](./docs/Redis.md)
 
 * 基本框架
   * [Spring](./docs/Spring.md)
