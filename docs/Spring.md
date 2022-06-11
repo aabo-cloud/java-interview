@@ -20,7 +20,7 @@
 
 `Spring` 是一个支持快速开发 `Java EE` 应用程序的框架。它提供了一系列底层容器和基础设施，并可以和大量常用的开源框架集成。
 
-> 部分模块：`Spring Core`、`Spring AOP`、`Spring Data Access`、`Spring Web`、`Spring Test`...
+> 部分模块：`Spring Core`、`Spring AOP`、`Spring Data Access`、`Spring Web`、`Spring TestX`...
 
 ### `IoC` 原理，为什么要使用 `IoC`？
 
