@@ -1,4 +1,4 @@
-package p1_Two_Pointers.t56两数之和;
+package p1_Two_Pointers.opposite.two_sum.t56两数之和;
 
 import header.ListItem;
 import lombok.extern.slf4j.Slf4j;
@@ -10,8 +10,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * https://www.lintcode.com/problem/56/description
  * Created by IntelliJ IDEA.
+ * https://www.lintcode.com/problem/56/description
+ * 给一个整数数组，找到两个数使得他们的和等于一个给定的数 target。
+ * 你需要实现的函数twoSum需要返回这两个数的下标, 并且第一个下标小于第二个下标。注意这里下标的范围是 0 到 n-1。
  *
  * @author aabo
  * @createTime 2022/6/11 20:36
