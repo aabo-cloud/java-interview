@@ -20,7 +20,7 @@
 
 * 分布式
   * [分布式原理](./docs/分布式.md)
-  * Spring Cloud
+  * [Spring Cloud](./docs/Spring%20Cloud.md)
   * [RPC框架](./docs/RPC框架.md)
 
 * 杂项
