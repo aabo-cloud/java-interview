@@ -1,18 +1,18 @@
 [TOC]
 
-## Spring & Spring Boot
+# Spring & Spring Boot
 
-### 什么是框架？
+## 什么是框架？
 
 具有约束性的，支撑开发人员去实现各种功能的半成品的项目。
 
-### 什么是容器？
+## 什么是容器？
 
 容器是一种为某种特定组件的运行提供必要支持的软件环境。
 
 例如，`Tomcat` 就是一个 `Servlet` 容器，它可以为 `Servlet` 提供运行环境。还有类似 `Docker` 提供了必要的 `Linux` 环境以便运行特定的 `Linux` 进程。
 
-### 什么是 `Spring` ？
+## 什么是 `Spring` ？
 
 ![Spring主要模块](Spring.assets/jvme0c60b4606711fc4a0b6faf03230247a.png)
 
@@ -22,7 +22,7 @@
 
 > 部分模块：`Spring Core`、`Spring AOP`、`Spring Data Access`、`Spring Web`、`Spring TestX`...
 
-### `IoC` 原理，为什么要使用 `IoC`？
+## `IoC` 原理，为什么要使用 `IoC`？
 
 **`IoC` (`Inverse of Control`)** **控制反转**是一种设计思想，将原本在程序中手动创建对象的控制权，交由 `Spring` 框架来管理。其中**控制**指的是对象创建 (实例化、管理) 的权力、**反转**指的是将控制权交给 `Spring` 框架。
 
@@ -36,7 +36,7 @@
 >
 > 所以 `IoC` 又称为 `Dependency Injection` 依赖注入，它将组件的创建和配置与组件的使用分离，由 `IoC` 容器管理组件的生命周期。
 
-### 什么是 `AOP`？
+## 什么是 `AOP`？
 
 `AOP` 是 `Aspect Oriented Programming` 面向切面编程。
 
@@ -48,22 +48,22 @@
 
 **`AOP` 是基于动态代理的**，如果要代理的对象实现了接口，那么 `Spring AOP` 会使用 **`JDK Proxy`**，去创建代理对象。对于没有实现接口的对象 `Spring AOP` 会使用 **`Cglib Proxy`** 生成一个被代理对象的子类来作为代理对象。也可以使用 `AspectJ` 作为 `AOP` 框架。
 
-#### `Spring AOP` 和 `AspectJ AOP` 有什么区别？
+### `Spring AOP` 和 `AspectJ AOP` 有什么区别？
 
 **`Spring AOP` 属于运行时增强，而 `AspectJ` 是编译时增强。** `Spring AOP` 基于代理 (`Proxying`)，而 `AspectJ` 基于字节码操作 ( `Bytecode Manipulation` )。
 
-### Spring Bean
+## Spring Bean
 
 `Bean` 代指的就是被 `IoC` 容器所管理的对象。可以通过 `xml` 、注解或配置类来配置数据。
 
-#### 将一个类声明为 `Bean` 的注解有哪些？
+### 将一个类声明为 `Bean` 的注解有哪些？
 
 - `@Component`：通用的注解，可标注任意类为 `Spring` 组件。如果一个 `Bean` 不知道属于哪个层，可以使用`@Component` 注解标注。
 - `@Repository`：对应持久层即 `Dao` 层，主要用于数据库相关操作。
 - `@Service`：对应服务层，主要涉及一些复杂的业务逻辑。
 - `@Controller`：对应 `Spring MVC` 控制层，主要接受用户请求并调用 `Service` 层返回数据给前端页面。
 
-#### `@Component` 和 `@Bean` 的区别是什么？
+### `@Component` 和 `@Bean` 的区别是什么？
 
 - `@Component` 作用于类，而 `@Bean` 作用于方法。
 
@@ -73,11 +73,11 @@
 
   `@Bean` 根据方法返回的对象产生一个 `Bean` 对象，并将这个对象交给 `Spring` 管理。产生这个 `Bean` 对象的方法`Spring` 只会调用一次，随后这个 `Spring` 将会将这个 `Bean` 对象放在自己的 `IOC` 容器中。
 
-#### 注入 `Bean` 的注解有哪些？
+### 注入 `Bean` 的注解有哪些？
 
 `Spring` 内置的 `@Autowired` 以及 `JDK` 内置的 `@Resource` 和 `@Inject` 都可以用于注入 `Bean`。
 
-#### `@Autowired` 和 `@Resource` 的区别是什么？
+### `@Autowired` 和 `@Resource` 的区别是什么？
 
 `Autowired` 属于 `Spring` 内置的注解，默认的注入方式为 `byType` (根据类型进行匹配)，会优先根据接口类型去匹配并注入 `Bean` (接口的实现类)。
 
@@ -87,13 +87,13 @@
 
 `@Resource` 属于 `JDK` 提供的注解，默认注入方式为 `byName`。如果无法通过名称匹配到对应的 `Bean`，注入方式变为 `byType`。`@Resource` 比较常用的属性：`name`、`type`。
 
-#### `@RestController` 的作用？
+### `@RestController` 的作用？
 
 `@RestController` 是 `@Controller` 和 `@ResponseBody` 的合集。
 
 表示这个 `controller` 的所有 `API` 返回的都是数据 ，不会返回视图。
 
-#### `Bean` 的作用域 (`@Scope`)？
+### `Bean` 的作用域 (`@Scope`)？
 
 `Spring` 中 `Bean` 的作用域通常有下面几种：
 
@@ -102,13 +102,13 @@
 - **`request`**：每一次 `HTTP` 请求都会产生一个新的 `Bean`，仅在当前 `HTTP request` 内有效。
 - **`session`**：每一次来自新 `session` 的 `HTTP` 请求都会产生一个新的 `Bean`，仅在当前 `HTTP session` 内有效。
 
-#### 单例 `Bean` 的线程安全问题？
+### 单例 `Bean` 的线程安全问题？
 
 当多个线程操作同一个对象的时候存在资源竞争。如果 `Bean` 中存在可变的成员变量，多线程情况下可能会造成数据不一致。
 
 可以在类中定义一个 `ThreadLocal` 成员变量，将可变成员变量保存在 `ThreadLocal` 中。
 
-#### `Bean` 的生命周期？
+### `Bean` 的生命周期？
 
 ![Spring Bean 生命周期](Spring.assets/b5d264565657a5395c2781081a7483e1.jpg)
 
@@ -118,9 +118,9 @@
 
 
 
-### 前后端传值注解？
+## 前后端传值注解？
 
-#### `@PathVariable` 和 `@RequestParam`？
+### `@PathVariable` 和 `@RequestParam`？
 
 `@PathVariable`用于获取路径参数，`@RequestParam`用于获取查询参数。一个方法可以有多个 `@RequestParam`和 `@PathVariable`。
 
@@ -134,7 +134,7 @@ public Student getStudent(
 // "/sys/xxx/student?name=param" => path=xxx, name=param
 ```
 
-#### `@RequestBody`?
+### `@RequestBody`?
 
 用于读取 `Request` 请求 (可能是 `POST`、`PUT`、`DELETE`、`GET` 请求) 的 `body` 部分并且 **`Content-Type` 为 `application/json`** 格式的数据，接收到数据之后会自动将数据绑定到 `Java` 对象。
 
@@ -142,7 +142,7 @@ public Student getStudent(
 
 一个请求方法只可以有一个`@RequestBody`。
 
-### 全局异常处理？
+## 全局异常处理？
 
 // TODO
 
@@ -150,7 +150,7 @@ public Student getStudent(
 
 
 
-### `Spring MVC`
+## `Spring MVC`
 
 `MVC` 是一个设计模式。它被分为三个核心部件：模型、视图、控制器。其核心思想是将业务逻辑、数据、显示分离。
 
@@ -160,7 +160,7 @@ public Student getStudent(
 
 `Spring MVC` 一般把后端项目分为 `Service` 层 (处理业务)、`Dao` 层 (数据库操作)、`Entity` 层 (实体类)、`Controller` 层 (控制层)。
 
-#### SpringMVC 工作原理？
+### SpringMVC 工作原理？
 
 ![img](Spring.assets/de6d2b213f112297298f3e223bf08f28.png)
 
@@ -175,22 +175,22 @@ public Student getStudent(
 7. `DispaterServlet` 把返回的 `Model` 传给 `View`（视图渲染）。
 8. 把 `View` 返回给浏览器。
 
-### `Spring` 事务
+## `Spring` 事务
 
-#### 什么是事务？
+### 什么是事务？
 
 事务是逻辑上的一组操作，要么都执行，要么都不执行。
 
 如果组中的所有操作都成功，则认为事务成功，即使只有一个操作失败，事务也不成功。如果一个操作失败，则事务将回滚，该事务所有操作的影响都将取消。
 
-#### 事务的特性 (`ACID`) 了解么？
+### 事务的特性 (`ACID`) 了解么？
 
 1. 原子性 `atomicity`：即不可分割性，事务中的操作要么全部被执行，要么全部不执行。
 2. 一致性 `consistency`：事务执行前后数据库状态都是正确的，例如 `A` 向 `B`  转账是一个事务，转账后两人的余额总和是不变的 。
 3. 隔离性 `isolation`：数据库允许多个并发事务同时对数据进行读写，隔离性可以防止多个事务并发执行时由于交叉执行而导致数据的不一致。事务隔离分为不同级别，包括未提交读 (`Read uncommitted`)、读已提交 (`read committed`)、可重复读(`repeatable read`) 和串行化 (`Serializable`)。
 4. 持久性 `durability`：当事务正确提交之后，其结果将永久保存在数据库中。
 
-####  `MySQL` 怎么保证原子性的？
+###  `MySQL` 怎么保证原子性的？
 
 如果想要保证事务的原子性，就需要在异常发生时，对已经执行的操作进行**回滚**。在 `MySQL` 中，恢复机制是通过 **回滚日志 (`undo log`)** 实现的，所有事务进行的修改都会先记录到这个回滚日志中，然后再执行。
 
@@ -198,12 +198,12 @@ public Student getStudent(
 
 并且，回滚日志会先于数据持久化到磁盘上。这样就保证了即使数据库突然宕机，用户再次启动数据库还能够通过查询回滚日志来回滚将之前未完成的事务。
 
-#### `Spring` 支持两种方式的事务管理？
+### `Spring` 支持两种方式的事务管理？
 
 - 编程式事务：在代码中硬编码。通过 `TransactionTemplate` 或者 `TransactionManager` 手动管理事务。
 - 声明式事务：基于 `XML` 或**注解**实现。实际也是通过 `AOP` 来实现。
 
-#### `Spring` 事务管理接口？
+### `Spring` 事务管理接口？
 
 事务管理相关最重要的 `3` 个接口：
 
@@ -219,7 +219,7 @@ public Student getStudent(
 
   其中定义了，判断事务是否是新事务、是否为只回滚、是否已完成等方法。
 
-#### 事务传播行为？
+### 事务传播行为？
 
 **`PROPAGATION_REQUIRED`**：
 
@@ -233,7 +233,7 @@ public Student getStudent(
 
 
 
-#### 事务隔离级别？
+### 事务隔离级别？
 
 `MySQL` 默认采用的 `REPEATABLE_READ` 隔离级别，`Oracle` 默认采用的 `READ_COMMITTED` 隔离级别。
 
@@ -251,7 +251,7 @@ public Student getStudent(
 
 4. 串行化 `SERIALIZABLE`：最高的事务隔离级别，在该级别下，事务串行化顺序执行，可以避免脏读、不可重复读与幻读。但是这种事务隔离级别效率低下，比较耗数据库性能，一般不使用。
 
-#### 并发事务带来的问题？
+### 并发事务带来的问题？
 
 **脏读：**一个事务得到了另一个事务尚未提交的数据。
 
@@ -265,20 +265,20 @@ public Student getStudent(
 
 幻读的重点在于新增或者删除。比如多次执行同一条查询语句时，发现记录增多或减少了。
 
-#### 事务只读属性？
+### 事务只读属性？
 
 对于只有读取数据查询的事务，可以指定事务类型为 `readonly`，即只读事务。只读事务不涉及数据的修改，数据库会提供一些优化手段，适合用在有多条数据库查询操作的方法中。
 
 - 如果一次执行单条查询语句，则没有必要启用事务支持。
 - 如果一次执行多条查询语句，例如统计查询，报表查询，在这种场景下，多条查询 `SQL` 必须保证整体的读一致性。否则在执行两条 `SQL` 之间，数据发生改变，则该次整体的统计查询将会出现读数据不一致的情况，此时应该启用事务。
 
-#### 事务回滚规则？
+### 事务回滚规则？
 
 默认情况下，事务只有遇到 `Error` 和运行期异常 (`RuntimeException` 的子类) 才会回滚。在遇到检查型(`Checked`) 异常时不会回滚。
 
 可以使用 `@Transactional(rollbackFor= MyException.class)` 来自定义要回滚的异常。
 
-#### `@Transactional` 注解？
+### `@Transactional` 注解？
 
 一般作用在方法和类上，作用在类上表示对所有的 `public` 都生效。
 
@@ -290,21 +290,87 @@ public Student getStudent(
 
 
 
-### `Spring` 中用到的设计模式
+## `Spring` 中用到的设计模式
 
 // TODO
 
 
 
-### `Spring Boot`
+## `Spring Boot`
+
+### Spring Boot 启动流程？
+
+运行一个SpringBoot项目，引入相关 `Starters` 和依赖后，再编写一个启动类，在这个启动类标上 `@SpringBootApplication` 注解，就可以启动运行项目了。
+
+```java
+//MainApplication.java
+@SpringBootApplication
+public class MainApplication {
+	public static void main(String[] args) {
+		SpringApplication.run(MainApplication.class, args);
+	}
+}
+```
+
+如上代码，在 `MainApplication` 启动类上标注了 `@SpringBootApplication` 注解，然后在 `main` 函数中调用`SpringApplication.run(MainApplication.class, args);` 这句代码就可以启动 SpringBoot。
+
+```java
+// SpringBootApplication.java 
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+@Inherited
+@SpringBootConfiguration
+@EnableAutoConfiguration
+@ComponentScan(excludeFilters = {
+		// TODO 这两个排除过滤器TypeExcludeFilter和AutoConfigurationExcludeFilter暂不知道啥作用
+		@Filter(type = FilterType.CUSTOM, classes = TypeExcludeFilter.class),
+		@Filter(type = FilterType.CUSTOM, classes = AutoConfigurationExcludeFilter.class) })
+public @interface SpringBootApplication {
+        // 等同于EnableAutoConfiguration注解的exclude属性
+	@AliasFor(annotation = EnableAutoConfiguration.class)
+	Class<?>[] exclude() default {};
+        // 等同于EnableAutoConfiguration注解的excludeName属性
+	@AliasFor(annotation = EnableAutoConfiguration.class)
+	String[] excludeName() default {};
+        // 等同于ComponentScan注解的basePackages属性
+	@AliasFor(annotation = ComponentScan.class, attribute = "basePackages")
+	String[] scanBasePackages() default {};
+        // 等同于ComponentScan注解的basePackageClasses属性
+	@AliasFor(annotation = ComponentScan.class, attribute = "basePackageClasses")
+	Class<?>[] scanBasePackageClasses() default {};
+}
+```
+
+`@SpringBootApplication` 注解是一个组合注解，主要由 `@SpringBootConfiguration`，`@EnableAutoConfiguration` 和`@ComponentScan` 这三个注解组合而成。
+
+因此 `@SpringBootApplication` 注解主要作为一个配置类，能够触发包扫描和自动配置的逻辑，从而使得 SpringBoot 的相关 `bean` 被注册进 Spring 容器。
+
+---
+
+在 SpringApplication.run 方法中会 new 一个 SpringApplication 对象，并调用其 run 方法来启动，这个 run 方法里面就是启动流程。
+
+1. 从`spring.factories`配置文件中**加载**`**EventPublishingRunListener**`**对象**，该对象拥有`SimpleApplicationEventMulticaster`属性，即在SpringBoot启动过程的不同阶段用来发射内置的生命周期事件;
+2. **准备环境变量**，包括系统变量，环境变量，命令行参数，默认变量，`servlet`相关配置变量，随机值以及配置文件（比如`application.properties`）等;
+3. 控制台**打印SpringBoot的**`**bannner**`**标志**；
+4. **根据不同类型环境创建不同类型的**`**applicationcontext**`**容器**，因为这里是`servlet`环境，所以创建的是`AnnotationConfigServletWebServerApplicationContext`容器对象；
+5. 从`spring.factories`配置文件中**加载**`**FailureAnalyzers**`**对象**,用来报告SpringBoot启动过程中的异常；
+6. **为刚创建的容器对象做一些初始化工作**，准备一些容器属性值等，对`ApplicationContext`应用一些相关的后置处理和调用各个`ApplicationContextInitializer`的初始化方法来执行一些初始化逻辑等；
+7. **刷新容器**，这一步至关重要。比如调用`bean factory`的后置处理器，注册`BeanPostProcessor`后置处理器，初始化事件广播器且广播事件，初始化剩下的单例`bean`和SpringBoot创建内嵌的`Tomcat`服务器等等重要且复杂的逻辑都在这里实现，主要步骤可见代码的注释，关于这里的逻辑会在以后的spring源码分析专题详细分析；
+8. **执行刷新容器后的后置处理逻辑**，注意这里为空方法；
+9. **调用**`**ApplicationRunner**`**和**`**CommandLineRunner**`**的run方法**，我们实现这两个接口可以在spring容器启动后需要的一些东西比如加载一些业务数据等;
+10. **报告启动异常**，即若启动过程中抛出异常，此时用`FailureAnalyzers`来报告异常;
+11. 最终**返回容器对象**，这里调用方法没有声明对象来接收。
 
 
 
-#### 什么是 `SpringBoot` 自动装配？
+
+
+### `SpringBoot` 自动装配？
 
 通过注解或者一些简单的配置就能在 `Spring Boot` 的帮助下实现某块功能。
 
-首先从 `@EnableAutoConfiguration` 开始。
+`@SpringBootApplication` 中有一个 `@EnableAutoConfiguration` 注解。
 
 该注解中有一个 `@Import({AutoConfigurationImportSelector.class})` 注解，会向 `IOC` 容器中导入 `AutoConfigurationImportSelector` 这个选择器组件，其中实现了 `selectImports` 方法，这个方法主要用于**获取所有符合条件的类的全限定类名，把他们加载到 `IoC` 容器中**。
 
