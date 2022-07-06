@@ -53,6 +53,8 @@
 
 ---
 
+
+
 ### 什么是上下文切换？
 
 线程在执行过程中会有自己的运行条件和状态 (也称上下文)，比如程序计数器，栈信息等。当出现如下情况的时候，线程会从占用 `CPU` 状态中退出。
@@ -113,6 +115,8 @@
 在调用 `start()` 方法前，调用 `setDaemon(true)` 把该线程标记为守护线程；守护线程是指为其他线程服务的线程。在 `JVM` 中，所有非守护线程都执行完毕后，无论有没有守护线程，虚拟机都会自动退出。
 
 ### `sleep()` 方法和 `wait()` 方法区别？
+
+sleep后进⼊Time waiting超时等待状态，wait后进⼊等待waiting状态。
 
 区别：
 
@@ -217,6 +221,18 @@ public class Singleton {
 
 // TODO 对象监视器 `monitor`
 
+##### `synchronized` 锁升级的过程？
+
+
+
+* 偏向锁：
+
+  大多数时候是不存在锁竞争的，常常是⼀个线程多次获得同⼀个锁，因此如果每次都要竞争锁会增⼤很多没有必要付出的代价，为了降低获取锁的代价，才引⼊的偏向锁。
+
+  
+
+
+
 
 
 #### `synchronized` 和 `ReentrantLock` 的区别？
@@ -225,13 +241,10 @@ public class Singleton {
 
 **可重入锁** 指的是自己可以再次获取自己的内部锁。比如一个线程获得了某个对象的锁，此时这个对象锁还没有释放，当其再次想要获取这个对象的锁的时候还是可以获取的，如果是不可重入锁的话，就会造成死锁。同一个线程每次获取锁，锁的计数器都自增 `1`，所以要等到锁的计数器下降为 `0` 时才能释放锁。
 
-`synchronized` 依赖于 `JVM` 而 `ReentrantLock` 依赖于 `API` (`AQS` 实现)，是 `Lock` 接口下的一个实现类。
-
-`ReentrantLock` 等待可中断。
-
-`synchronized` 中的锁是非公平的，`ReentrantLock` 默认也是非公平的，但是可以通过修改参数来实现公平锁。
-
-`synchronized` 隐式获取锁和释放锁，`ReentrantLock` 显示获取和释放锁 (需要 `lock()` 和 `unlock()` 方法配合 `try/finally` 语句块)。
+* `synchronized` 依赖于 `JVM` 而 `ReentrantLock` 依赖于 `API` (`AQS` 实现)，是 `Lock` 接口下的一个实现类。
+* `ReentrantLock` 等待可中断。
+* `synchronized` 中的锁是非公平的，`ReentrantLock` 默认也是非公平的，但是可以通过修改参数来实现公平锁。
+* `synchronized` 隐式获取锁和释放锁，`ReentrantLock` 显示获取和释放锁 (需要 `lock()` 和 `unlock()` 方法配合 `try/finally` 语句块)。
 
 ### `volatile` 关键字？
 
@@ -319,6 +332,14 @@ public class Singleton {
 3. 如果这时候队列满了，而且正在运行的线程数量小于 `maximumPoolSize`，那么还是要创建非核心线程立刻运行这个任务。
 4. 如果队列满了，而且正在运行的线程数量大于或等于 `maximumPoolSize`，执行拒绝策略。
 
+#### 常见的阻塞队列有哪些？
+
+* ArrayBlockingQueue：有界队列，其内部的实现是基 于数组来实现的。
+* LinkedBlockingQueue：从它的名字我们可以知道，它是⼀个由链表实现的队列，这个队列 的长度Integer.MAX_VALUE。此队列按照先进先出的顺序进⾏排 序。
+* SynchronousQueue：是⼀个不存储任何元素的阻塞队列，每⼀个put操作必须等待take操 作，否则不能添加元素。同时它也⽀持公平锁和⾮公平锁。
+* PriorityBlockingQueue：是⼀个⽀持优先级排序的⽆界阻塞队列，可以通过⾃定义实现 compareTo() ⽅法来指定元素的排序规则，或者通过构造器参数 Comparator 来指定排序规 则。但是需要注意插⼊队列的对象必须是可⽐较⼤⼩的，也就是 Comparable 的，否则会抛 出 ClassCastException 异常。
+* DelayQueue：是⼀个实现 PriorityBlockingQueue 的延迟获取的⽆界队列。具有“延迟”的功 能。
+
 ### `Atomic` 原子类？
 
 在多线程环境下，使用原子类，不会被其他线程锁干扰。
@@ -373,6 +394,8 @@ public class Singleton {
 2. 调用其模板方法，而这些模板方法会调用自定义同步器重写的方法。
 
 // TODO AQS 更详细
+
+
 
 
 
