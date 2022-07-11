@@ -24,6 +24,8 @@ public class BinarySearchTreeTest {
         binarySearchTreeService.insertNode(root, new TreeNode(200));
         binarySearchTreeService.insertNode(root, new TreeNode(60));
         binarySearchTreeService.insertNode(root, new TreeNode(300));
+        binarySearchTreeService.insertNode(root, new TreeNode(150));
+        binarySearchTreeService.insertNode(root, new TreeNode(170));
 
     }
 
@@ -47,6 +49,23 @@ public class BinarySearchTreeTest {
         System.out.println(binarySearchTreeService.selectParent(dummy, root, 60));
         System.out.println(binarySearchTreeService.selectParent(dummy, root, 300));
 
+    }
+
+    @Test
+    public void deleteNode() {
+
+        binarySearchTreeService.traversalTree(root);
+        System.out.println();
+
+//        root = binarySearchTreeService.deleteNode(root, 60);
+//        binarySearchTreeService.traversalTree(root);
+//        System.out.println();
+//        root = binarySearchTreeService.deleteNode(root, 200);
+//        binarySearchTreeService.traversalTree(root);
+//        System.out.println();
+        root = binarySearchTreeService.deleteNode(root, 100);
+        binarySearchTreeService.traversalTree(root);
+        System.out.println();
     }
 
 }

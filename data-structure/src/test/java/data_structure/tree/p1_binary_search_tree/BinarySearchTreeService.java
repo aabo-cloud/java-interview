@@ -24,6 +24,16 @@ public interface BinarySearchTreeService {
      */
     TreeNode insertNode(TreeNode root, TreeNode node);
 
+
+    /**
+     * 删除节点
+     *
+     * @param root
+     * @param value
+     * @return
+     */
+    TreeNode deleteNode(TreeNode root, int value);
+
     /**
      * 查找结点
      *
