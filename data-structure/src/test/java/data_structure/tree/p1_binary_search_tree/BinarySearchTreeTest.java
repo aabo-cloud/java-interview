@@ -57,12 +57,12 @@ public class BinarySearchTreeTest {
         binarySearchTreeService.traversalTree(root);
         System.out.println();
 
-//        root = binarySearchTreeService.deleteNode(root, 60);
-//        binarySearchTreeService.traversalTree(root);
-//        System.out.println();
-//        root = binarySearchTreeService.deleteNode(root, 200);
-//        binarySearchTreeService.traversalTree(root);
-//        System.out.println();
+        root = binarySearchTreeService.deleteNode(root, 60);
+        binarySearchTreeService.traversalTree(root);
+        System.out.println();
+        root = binarySearchTreeService.deleteNode(root, 200);
+        binarySearchTreeService.traversalTree(root);
+        System.out.println();
         root = binarySearchTreeService.deleteNode(root, 100);
         binarySearchTreeService.traversalTree(root);
         System.out.println();

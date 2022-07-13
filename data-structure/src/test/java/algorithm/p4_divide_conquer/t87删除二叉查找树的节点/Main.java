@@ -1,42 +1,24 @@
-package data_structure.tree.p1_binary_search_tree;
+package algorithm.p4_divide_conquer.t87删除二叉查找树的节点;
+
+import algorithm.header.TreeNode;
 
 /**
  * Created by IntelliJ IDEA.
  *
  * @author aabo
- * @createTime 2022/7/10 20:52
+ * @createTime 2022/7/12 23:35
  */
-public class BinarySearchTreeServiceImpl implements BinarySearchTreeService {
+public class Main {
 
-
-    @Override
-    public void traversalTree(TreeNode root) {
-
-        if (root == null) {
-            return;
-        }
-        traversalTree(root.left);
-        System.out.print(root.value + " ");
-        traversalTree(root.right);
-
+    /**
+     * @param root:  The root of the binary search tree.
+     * @param value: Remove the node with given value.
+     * @return: The root of the binary search tree after removal.
+     */
+    public TreeNode removeNode(TreeNode root, int value) {
+        return deleteNode(root, value);
     }
 
-    @Override
-    public TreeNode insertNode(TreeNode root, TreeNode node) {
-
-        if (root == null) {
-            return node;
-        }
-        if (node.value < root.value) {
-            root.left = insertNode(root.left, node);
-        } else {
-            root.right = insertNode(root.right, node);
-        }
-        return root;
-
-    }
-
-    @Override
     public TreeNode deleteNode(TreeNode root, int value) {
 
         // 临时结点
@@ -46,9 +28,9 @@ public class BinarySearchTreeServiceImpl implements BinarySearchTreeService {
         TreeNode parent = selectParent(dummy, root, value);
         TreeNode delNode = null;
         boolean isLeft = true;
-        if (parent.left != null && parent.left.value == value) {
+        if (parent.left != null && parent.left.val == value) {
             delNode = parent.left;
-        } else if (parent.right != null && parent.right.value == value) {
+        } else if (parent.right != null && parent.right.val == value) {
             delNode = parent.right;
             isLeft = false;
         } else {
@@ -61,41 +43,19 @@ public class BinarySearchTreeServiceImpl implements BinarySearchTreeService {
         return dummy.left;
     }
 
-    @Override
-    public TreeNode selectNode(TreeNode root, int value) {
-
-        if (root == null || root.value == value) {
-            return root;
-        }
-        if (value < root.value) {
-            return selectNode(root.left, value);
-        }
-        return selectNode(root.right, value);
-
-    }
-
-    @Override
     public TreeNode selectParent(TreeNode parent, TreeNode node, int value) {
 
-        if (node == null || node.value == value) {
+        if (node == null || node.val == value) {
             return parent;
         }
 
-        if (value < node.value) {
+        if (value < node.val) {
             return selectParent(node, node.left, value);
         }
-        return selectParent(node, node.right, value);
 
+        return selectParent(node, node.right, value);
     }
 
-    /**
-     * 模拟二叉搜索树四种删除节点的请求
-     * 代码上有很多可以优化的地方
-     *
-     * @param parent
-     * @param node
-     * @param isLeft
-     */
     private void deleteTreeNode(TreeNode parent, TreeNode node, boolean isLeft) {
 
         // 1. 待删除节点是叶子结点
@@ -141,7 +101,7 @@ public class BinarySearchTreeServiceImpl implements BinarySearchTreeService {
             } else {
                 parent.right = next;
             }
-            // 左子树继承待删除节点的左子树 右子树不变
+            // 后继的左子树继承待删除节点的左子树 右子树不变
             next.left = node.left;
             return;
         }
