@@ -68,4 +68,13 @@ public class BinarySearchTreeTest {
         System.out.println();
     }
 
+    @Test
+    public void test() {
+
+        int index = 1;
+        System.out.println(index ^= 1);
+        System.out.println(index ^= 1);
+
+    }
+
 }
