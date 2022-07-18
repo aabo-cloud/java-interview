@@ -4,6 +4,10 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 /**
  * Created by IntelliJ IDEA.
  *
@@ -74,7 +78,6 @@ public class BinarySearchTreeTest {
         int index = 1;
         System.out.println(index ^= 1);
         System.out.println(index ^= 1);
-
     }
 
 }
