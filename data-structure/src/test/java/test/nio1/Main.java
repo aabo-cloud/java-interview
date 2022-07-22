@@ -1,7 +1,8 @@
-package test;
+package test.nio1;
 
 /**
  * Created by IntelliJ IDEA.
+ * 链表排序
  *
  * @author aabo
  * @createTime 2022/7/19 18:36
@@ -22,7 +23,6 @@ class ListNode {
 public class Main {
 
     public static void main(String[] args) {
-
 
 
     }
@@ -65,7 +65,6 @@ public class Main {
 
         return node.next;
     }
-
 
 
 }
