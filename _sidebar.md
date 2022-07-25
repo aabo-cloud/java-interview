@@ -6,6 +6,7 @@
 
 * 系统设计
     * [常见系统设计](./docs/系统设计.md)
+    * [设计模式](./docs/设计模式.md)
 
 * Java
     * [Java基础](./docs/Java基础.md)
@@ -35,6 +36,7 @@
 * 杂项
     * [大数据](./docs/大数据.md)
     * [Shell脚本](./docs/Shell脚本.md)
+    * [智力题](./docs/智力题.md)
 
 
 
