@@ -4,11 +4,7 @@
 
 - `#{}` 将传入的数据都当成一个字符串，会对传入的变量自动加一个单引号。`#{}`是 sql 的参数占位符，MyBatis 会将 sql 中的`#{}`替换为 ? 号，在 sql 执行前会使用 PreparedStatement 的参数设置方法，按序给 sql 的 ? 号占位符设置参数值，比如 ps.setInt(0, parameterValue)，`#{item.name}` 的取值方式为使用反射从参数对象中获取 item 对象的 name 属性值，相当于 `param.getItem().getName()`。
 
-  
-
 - `${}` 是字符串替换符，将传入的参数直接显示生成在 sql 中，且不加任何引号。一般用于传入数据库对象，例如传入表名。
-
-
 
 ### Xml 映射文件中，除了常见的 select|insert|update|delete 标签之外，还有哪些标签？
 

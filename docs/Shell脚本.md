@@ -1,13 +1,10 @@
 ## Shell 脚本
 
-
 https://javaguide.cn/cs-basics/operating-system/shell-intro.html
 
 将实验参数写入配置文件 `config.properties` 在 `Shell` 脚本中动态写入配置文件。实现实验的批量执行。
 
 运行一次脚本可以执行不同方法的代码。方便实验。
-
-
 
 ```sh
 #! /bin/bash

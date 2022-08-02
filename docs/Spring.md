@@ -252,9 +252,13 @@ public Student getStudent(
 4. 串行化 `SERIALIZABLE`：最高的事务隔离级别，在该级别下，事务串行化顺序执行，可以避免脏读、不可重复读与幻读。但是这种事务隔离级别效率低下，比较耗数据库性能，一般不使用。
 
 ### Spring 事务失效的情况？
+
 * 事务控制类没有被Spring IOC容器管理。
+
 * 方法中抛出受检查异常，spring默认只会回滚非检查异常和error异常。可以通过配置 `配置rollbackFor`解决。
-* 方法自己捕获了异常。spring事务只有捕捉到了业务抛出去的异常，才能进行后续的处理。可以通过将捕获到的异常鸳鸯抛出；`setRollbackOnly()` 来解决。
+
+* 方法自己捕获了异常。spring事务只有捕捉到了业务抛出去的异常，才能进行后续的处理。可以通过将捕获到的异常原样抛出；`setRollbackOnly()` 来解决。
+
 * 事务控制的方法非public、方法用final、static修饰。
 
 ### 并发事务带来的问题？
@@ -293,13 +297,6 @@ public Student getStudent(
 `@Transactional` 的工作机制是基于 `AOP` 实现的。
 
 // TODO 
-
-
-
-## `Spring` 中用到的设计模式
-
-// TODO
-
 
 
 ## `Spring Boot`
