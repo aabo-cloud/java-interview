@@ -54,6 +54,7 @@ public class LRUCache {
             return -1;
         }
         kick(key);
+
         return tail.value;
     }
 
@@ -75,6 +76,7 @@ public class LRUCache {
         if (keyToPre.size() > capacity) {
             popFront();
         }
+
     }
 
     /**

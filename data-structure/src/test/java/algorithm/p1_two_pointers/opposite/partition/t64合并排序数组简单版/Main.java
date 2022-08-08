@@ -9,10 +9,10 @@ public class Main {
      * @return: nothing
      */
     public void mergeSortedArray(int[] A, int m, int[] B, int n) {
-        // write your code here
 
         int i = m - 1, j = n - 1;
         int cur = m + n - 1;
+
         while (i >= 0 && j >= 0) {
             if (A[i] >= B[j]) {
                 A[cur--] = A[i--];

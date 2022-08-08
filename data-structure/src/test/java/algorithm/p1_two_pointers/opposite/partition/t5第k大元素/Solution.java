@@ -33,6 +33,7 @@ public class Solution {
                 right--;
             }
         }
+
         if (k <= right) {
             return partition(k, nums, start, right);
         }
