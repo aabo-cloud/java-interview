@@ -1,5 +1,7 @@
 package test.bytedance1;
 
+import java.util.concurrent.locks.Lock;
+
 /**
  * Created by IntelliJ IDEA.
  * 最小覆盖子串
@@ -9,6 +11,8 @@ package test.bytedance1;
  */
 public class Main {
 
+    public static void main(String[] args) {
 
+    }
 
 }
