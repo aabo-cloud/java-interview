@@ -160,7 +160,7 @@ int threshold; //哈希桶长度*加载因子，超过此数量后扩容，容�
 index = h & (table.length -1)
 ```
 
-### HashMap 冲突严重怎么办？
+### `HashMap` 冲突严重怎么办？
 
 * 降低负载因子的值，即降低冲突，提高时间效率，用空间换时间。
 
@@ -181,15 +181,24 @@ index = h & (table.length -1)
 - **底层数据结构：** JDK1.7 的 `ConcurrentHashMap` 底层采用 **分段的数组+链表** 实现，JDK1.8 采用的数据结构跟 `HashMap1.8` 的结构一样，数组+链表/红黑二叉树。`Hashtable` 和 JDK1.8 之前的 `HashMap` 的底层数据结构类似都是采用 **数组+链表** 的形式，数组是 HashMap 的主体，链表则是主要为了解决哈希冲突而存在的；
 - **实现线程安全的方式（重要）：** ① **在 JDK1.7 的时候，`ConcurrentHashMap`（分段锁）** 对整个桶数组进行了分割分段(`Segment`)，每一把锁只锁容器其中一部分数据，多线程访问容器里不同数据段的数据，就不会存在锁竞争，提高并发访问率。 **到了 JDK1.8 的时候已经摒弃了 `Segment` 的概念，而是直接用 `Node` 数组+链表+红黑树的数据结构来实现，并发控制使用 `synchronized` 和 CAS 来操作。（JDK1.6 以后 对 `synchronized` 锁做了很多优化）** 整个看起来就像是优化过且线程安全的 `HashMap`，虽然在 JDK1.8 中还能看到 `Segment` 的数据结构，但是已经简化了属性，只是为了兼容旧版本；② **`Hashtable`(同一把锁)** :使用 `synchronized` 来保证线程安全，效率非常低下。当一个线程访问同步方法时，其他线程也访问同步方法，可能会进入阻塞或轮询状态，如使用 put 添加元素，另一个线程不能使用 put 添加元素，也不能使用 get，竞争会越来越激烈效率越低。
 
+### `HashMap` 和 `Hashtable` 的区别？
+
+* 线程是否安全： HashMap 是⾮线程安全的，HashTable 是线程安全的。
+* 对 Null key 和 Null value 的⽀持： HashMap可以存储 null 的 key 和 value，但 null 作 为键只能有⼀个，null 作为值可以有多个；HashTable 不允许有 null 键和 null 值，否则会抛出 NullPointerException。
+* 初始容量大小和每次扩充容量大小的不同：
+  * 创建时如果不指定容量初始值，Hashtable默认的初始大小为 11，之后每次扩充，容量变 为原来的 2n+1。HashMap 默认的初始化大小为 16。之后每次扩充，容量变为原来的 2 倍。
+  * 创建时如果给定了容量初始值，那么 Hashtable 会直接使⽤你给定的大小，而 HashMap会 将其扩充为 2 的幂次方大小。
+* 底层数据结构： JDK1.8 以后的 HashMap 在解决哈希冲突时有了较⼤的变化，当链表⻓ 度⼤于阈值（默认为 8）（将链表转换成红⿊树前会判断，如果当前数组的⻓度⼩于 64，那 么会选择先进⾏数组扩容，⽽不是转换为红⿊树）时，将链表转化为红⿊树，以减少搜索时 间。Hashtable 没有这样的机制。
+* 效率： 因为线程安全的问题，HashMap 要比 Hashtable 效率⾼⼀点。
+
 ### `HashMap` 和 `TreeMap` 区别？
 
 `TreeMap` 和`HashMap` 都继承自`AbstractMap` ，但是 `TreeMap` 还实现了 `NavigableMap` 接口和 `SortedMap`  接口。
 
 ![img](Java集合.assets/TreeMap继承结构.d3d526de.png)
 
-实现 `NavigableMap` 接口让 `TreeMap`  可以对集合内元素进行搜索。
-
-实现 `SortedMap` 接口让 `TreeMap` 可以对集合内元素根据 `key` 排序。默认按 `key` 的升序排序，也可以指定排序的比较器 ( `new Comparator<Object>()` )。
+* 实现 `NavigableMap` 接口让 `TreeMap`  可以对集合内元素进行搜索。
+* 实现 `SortedMap` 接口让 `TreeMap` 可以对集合内元素根据 `key` 排序。默认按 `key` 的升序排序，也可以指定排序的比较器 ( `new Comparator<Object>()` )。
 
 ### Collections 工具类常用方法
 
