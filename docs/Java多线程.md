@@ -162,6 +162,7 @@ Monitor是由 ObjectMonitor 这个对象实现的，这里已经是C++了。Obje
 * `ReentrantLock` 等待可中断。
 * `synchronized` 中的锁是非公平的，`ReentrantLock` 默认也是非公平的，但是可以通过修改参数来实现公平锁。
 * `synchronized` 隐式获取锁和释放锁，`ReentrantLock` 显示获取和释放锁 (需要 `lock()` 和 `unlock()` 方法配合 `try/finally` 语句块)。
+* `ReentrantLock` 可以绑定多个 `Condition` 对象，实现多条件关联的获取和释放锁。`Synchronized` 要增加锁才行。
 
 #### `ReentrantLock` 中非公平和公平的实现原理
 
@@ -265,6 +266,8 @@ Monitor是由 ObjectMonitor 这个对象实现的，这里已经是C++了。Obje
   - `DiscardOldestpolicy`：丢弃即将执行的下一个任务，并尝试再次提交当前任务。
   - `DiscardPolicy`：丢弃当前任务，不予处理。
 
+**线程池重要原理：**
+
 当一个任务通过 `submit()` 或者 `execute()` 方法提交到线程池的时候：
 
 1. 如果正在运行的线程数量小于 `corePoolSize`，那么马上创建线程运行这个任务。
@@ -274,11 +277,11 @@ Monitor是由 ObjectMonitor 这个对象实现的，这里已经是C++了。Obje
 
 #### 常见的阻塞队列有哪些？
 
-* ArrayBlockingQueue：有界队列，其内部的实现是基 于数组来实现的。
-* LinkedBlockingQueue：由链表实现的队列，这个队列 的长度 `Integer.MAX_VALUE`。此队列按照先进先出的顺序进⾏排 序。
-* SynchronousQueue：是⼀个不存储任何元素的阻塞队列，每⼀个put操作必须等待take操 作，否则不能添加元素。同时它也⽀持公平锁和⾮公平锁。
-* PriorityBlockingQueue：是⼀个⽀持优先级排序的⽆界阻塞队列，可以通过⾃定义实现 compareTo() ⽅法来指定元素的排序规则，或者通过构造器参数 Comparator 来指定排序规 则。但是需要注意插⼊队列的对象必须是可⽐较⼤⼩的，也就是 Comparable 的，否则会抛 出 ClassCastException 异常。
-* DelayQueue：是⼀个实现 PriorityBlockingQueue 的延迟获取的⽆界队列。具有“延迟”的功 能。
+* `ArrayBlockingQueue`：一个由数组结构组成的有界阻塞队列。 此队列按照先进先出（FIFO）的原则对元素进行排序。默认情况下不保证访问者公平地访问队列 ，所谓公平访问队列是指阻塞的线程，可按照阻塞的先后顺序访问队列。非公平性是对先等待的线程是不公平的，当队列可用时，阻塞的线程都可以竞争访问队列的资格。
+* `LinkedBlockingQueue`：一个由链表结构组成的有界阻塞队列。 此队列的默认和最大长度为 Integer.MAX_VALUE。 此队列按照先进先出的原则对元素进行排序。
+* `SynchronousQueue`：是⼀个不存储任何元素的阻塞队列，每⼀个 put 操作必须等待 take 操作，否则不能添加元素。同时它也支持公平锁和非公平锁。
+* `PriorityBlockingQueue`：是⼀个⽀持优先级排序的无界阻塞队列，可以通过自定义实现 compareTo() 方法来指定元素的排序规则，或者通过构造器参数 Comparator 来指定排序规则。
+* `DelayQueue`：是⼀个实现 `PriorityBlockingQueue` 的延迟获取的⽆界队列。只有在 Delay 时间到达的时候才能从中提取元素。
 
 #### 线程池大小确定？
 

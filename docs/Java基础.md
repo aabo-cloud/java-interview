@@ -176,6 +176,16 @@ Integer num3 = new Integer(123);
 
 所以重写 `equals()` 时必须重写 `hashCode()` 方法.。
 
+### Object 类有哪些方法？
+
+* getClass() 得到 Class 对象。
+* hashCode() 
+* equals()
+* clone()
+* toString()
+* notify() notifyAll()
+* wait()
+
 ### String、StringBuffer、StringBuilder 的区别？
 
 `String` 类型中使用 `final` 关键字来修饰字符数组，所以 `String` 对象是不可修改的。

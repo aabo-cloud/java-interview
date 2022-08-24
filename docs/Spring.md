@@ -77,6 +77,12 @@
 
 `Spring` 内置的 `@Autowired` 以及 `JDK` 内置的 `@Resource` 和 `@Inject` 都可以用于注入 `Bean`。
 
+### `@Inject` 注解
+
+可以用在构造方法和普通方法，自动注入参数。
+
+也可以在属性上直接注入。
+
 ### `@Autowired` 和 `@Resource` 的区别是什么？
 
 `Autowired` 属于 `Spring` 内置的注解，默认的注入方式为 `byType` (根据类型进行匹配)，会优先根据接口类型去匹配并注入 `Bean` (接口的实现类)。
@@ -116,7 +122,22 @@
 
 // TODO
 
+### Spring 循环依赖问题？
 
+使用三级缓存机制解决循环依赖问题。
+
+* 「singletonObjects」中缓存的是已经经历了完整生命周期的bean对象。
+* 「earlySingletonObjects」比 singletonObjects 多了一个 early ，表示缓存的是早期的 bean对象。早期指的是 Bean 的生命周期还没走完就把这个 Bean 放入了 earlySingletonObjects。
+* 「singletonFactories」中缓存的是 ObjectFactory，表示对象工厂，用来创建某个对象的。
+
+![在这里插入图片描述](Spring.assets/4f8be94c2b604ff09bff074414221a5c.png)
+
+A 的 Bean 在创建过程中，在进行依赖注入之前，先把 A 的原始 Bean 放入缓存（提早暴露，只要放到缓存了，其他 Bean 需要时就可以从缓存中拿了），放入缓存后，再进行依赖注入，此时 A 的Bean 依赖了 B 的 Bean 。
+
+如果 B 的 Bean 不存在，则需要创建 B 的 Bean，而创建 B 的 Bean 的过程和 A 一样，也是先创建一个 B 的原始对象，然后把 B 的原始对象提早暴露出来放入缓存中，然后在对 B 的原始对象进行依赖注入 A，此时能从缓存中拿到 A 的原始对象（虽然是 A 的原始对象，还不是最终的 Bean），B 的原始对象依赖注入完了之后，B 的生命周期结束，那么 A 的生命周期也能结束。
+
+因为整个过程中，都只有一个 A 原始对象，所以对于 B 而言，就算在属性注入时，注入的是 A 原始对
+象，也没有关系，因为A 原始对象在后续的生命周期中在堆中没有发生变化。
 
 ## 前后端传值注解？
 
@@ -298,8 +319,15 @@ public Student getStudent(
 
 // TODO 
 
-
 ## `Spring Boot`
+
+### 相比于 `Spring` 的优点
+
+* 遵循"习惯优于配置"原则，springboot只需要很少的配置。
+* 可以完全不使用xml文件配置，只使用自动配置和JAVA Config即可。
+* 内嵌的Tomcat服务器，不需要额外配置服务器。
+* spring boot提供了更多的starters来快速构建业务框架，starters可以理解为启动器，包含了一些列可以集成到应用的依赖，可以一站式集成spring及其他技术，而不需要到处找依赖包。
+* 项目可以快速构建，另外还可以更加简单的配置整合第三方框架。
 
 ### Spring Boot 启动流程？
 
