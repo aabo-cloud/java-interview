@@ -21,4 +21,11 @@ public class DirectedGraphNode {
         this.label = label;
         neighbors = new ArrayList<DirectedGraphNode>();
     }
+
+    @Override
+    public String toString() {
+        return "DirectedGraphNode{" +
+                "label=" + label +
+                '}';
+    }
 }
