@@ -452,5 +452,29 @@ AutoConfigurationEntry getAutoConfigurationEntry(AutoConfigurationMetadata autoC
 
 
 
+### Spring Boot 读取配置的方式
+
+* 通过 `Environment` 类来读取配置信息。
+* 通过 `@Value` 注解读取配置信息（推荐使用）。
+* 通过 `@ConfigurationProperties` 注解读取配置信息。
+* 通过 `@PropertySource+@Value` 注解读取配置信息。
+* 通过 `@PropertySource+@ConfigurationProperties` 注解读取配置信息。
+* 通过 `Properties` 类读取配置信息。
+
+
+
+### `.properties` 和 `.yaml` 的区别
+
+* 定位不同。properties 就是用来在 Spring Boot 项目中设置属性的。yaml 是一种标记语言，除了配置属性还可以做别的操作。
+* 语法不同。等号和冒号。yml更简洁。
+* yml 更好的支持多种数据类型。yml 除了可以很好的配置基础数据类型之外，它还可以很方便的配置对象、集合等数据类型。
+* yml 可以跨语言。properties 只能用于 Spring Boot 项目。
+
+
+
+
+
+
+
 
 
