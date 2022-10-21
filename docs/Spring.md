@@ -472,7 +472,32 @@ AutoConfigurationEntry getAutoConfigurationEntry(AutoConfigurationMetadata autoC
 
 
 
+### BO (Bussiness) 业务对象
 
+主要在服务内部使用的业务对象
+
+可以包含多个对象，可以用于对象的聚合操作
+
+### VO (View Object) 视图对象
+
+和视图打交道的，那么经历了视图的都归属于这个类，所以我们的输入输出类都是属于 VO。
+
+### PO (Persistent Object) 永久对象
+
+这些对象对应着数据库的每一个字段名以下是我的数据库表（如下表），所以我entity类对应着数据库的每个列，称为PO。
+
+### DTO (Data Transfer Object) 数据传输对象
+
+在服务间的调用中，传输的数据对象
+DTO是可以存在于各层服务中（接口、服务、数据库等等）服务间的交互使用DTO来解耦
+
+
+
+| ddd  |      |      |
+| ---- | ---- | ---- |
+|      |      |      |
+|      |      |      |
+|      |      |      |
 
 
 
