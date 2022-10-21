@@ -167,6 +167,19 @@ public Student getStudent(
 
 // TODO
 
+### `Spring` 如何解决循环依赖问题？
+
+#### 构造器注入循环依赖
+无法解决，抛出异常。
+
+#### field属性注入（setter方法注入）循环依赖
+![img.png](Spring.assets/Spring创建Bean的流程.png)
+
+* `createBeanInstance`：实例化，其实也就是调用对象的构造方法实例化对象。
+* `populateBean`：填充属性，这一步主要是对bean的依赖属性进行注入(@Autowired)。
+* `initializeBean`：回到一些形如initMethod、InitializingBean等方法
+
+循环依赖主要发生在第二步（populateBean），也就是field属性注入的处理。
 
 
 
