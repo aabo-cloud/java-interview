@@ -1,7 +1,5 @@
 # java-interview
 
-[简易计算器入口](cal/index.html)
-
 `https://github.com/aabo-cloud/java-interview`
 
 面试准备
