@@ -2,6 +2,8 @@ package test;
 
 import org.junit.Test;
 
+import java.util.Scanner;
+
 /**
  * Created by IntelliJ IDEA.
  *
@@ -14,5 +16,5 @@ public class Main {
     public void test() {
         System.out.println("xx");
     }
-    
+
 }
