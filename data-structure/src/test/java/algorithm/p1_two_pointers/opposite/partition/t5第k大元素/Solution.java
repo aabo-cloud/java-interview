@@ -51,7 +51,7 @@ public class Solution {
 
     public static void main(String[] args) {
         int[] test = {0, 1, 2, 3, 4, 5, 6};
-        System.out.println(kthLargestElement(3, test));
+        System.out.println(kthLargestElement(1, test));
     }
 
 }
