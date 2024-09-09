@@ -1,6 +1,5 @@
-package com.luogu.rm.P1138;
+package com.luogu.pjminus.P1138;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Scanner;
 import java.util.Set;
